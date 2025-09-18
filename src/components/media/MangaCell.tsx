@@ -1,4 +1,6 @@
-// dependencies
+// components
+import { useState } from "react";
+import MediaStatusBtn from "../btns/MediaStatusBtn";
 
 const MangaCell = ({
     imgUrl,
@@ -15,6 +17,8 @@ const MangaCell = ({
     status?: string;
     rating?: number;
 }) => {
+    const [labelStatus, setLabelStatus] = useState(status ?? "Select Status");
+
     return (
         <div className="flex items-center align-center justify-between gap-6 w-full h-full bg-gray-400 hover:bg-[#bbbbbb] transition rounded-2xl">
             <img src={imgUrl} alt="manga cover" className="w-30 h-30 object-cover" />
@@ -24,9 +28,13 @@ const MangaCell = ({
                     <p className="text-lg text-gray-600 mb-2">{author}</p>
                 </div>
                 <p className="w-full text-lg text-gray-800 mb-2">Progress: {progress}</p>
-                <button className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                    {status}
-                </button>
+                <MediaStatusBtn
+                    currentStatus={labelStatus}
+                    options={["Reading", "Completed", "On Hold", "Dropped", "Plan to Read"]}
+                    onSelect={(newStatus) => {
+                        setLabelStatus(newStatus);
+                    }}
+                />
             </div>
             <p className="text-lg text-gray-600 pr-6">{rating}</p>
         </div>
