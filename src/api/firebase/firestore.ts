@@ -1,12 +1,13 @@
 // firebase config
 import { db } from "./firebaseConfig";
 // dependencies
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { type MangaItem } from "../../utility/interfaces";
 
 const mangaCollection = "manga";
 
-export const fetchMediaItemByID = async (
+// fetch manga item by id
+export const fetchMangaItemByID = async (
     id: string
 ): Promise<MangaItem | null> => {
     const docRef = doc(db, mangaCollection, id);
@@ -19,4 +20,14 @@ export const fetchMediaItemByID = async (
         console.log("No such document");
         return null;
     }
+};
+
+// fetch all manga items
+export const fetchAllMangaItems = async (): Promise<MangaItem[]> => {
+    const querySnapshot = await getDocs(collection(db, mangaCollection));
+    const mangaItems: MangaItem[] = [];
+    querySnapshot.forEach((doc) => {
+        mangaItems.push({ id: doc.id, ...doc.data() } as MangaItem);
+    });
+    return mangaItems;
 };

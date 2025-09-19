@@ -8,49 +8,16 @@ import Search from "../components/common/Search";
 // utility
 import { removeStartAndEndWhitespace } from "../utility/manipulateStr";
 import { useEffect } from "react";
-import { useFecthMediaItem } from "../hooks/useFirestore";
-
-// temp seed manga
-const manga = [
-    {
-        id: 0,
-        imgUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgcqp4aZoigwFfalwhgtv4txxFk-2KVD3HHQ&s",
-        title: "One Piece",
-        author: "Eiichiro Oda",
-        progress: "20/1335",
-        status: "Reading",
-        rating: 7,
-    },
-    {
-        id: 1,
-        imgUrl: "https://christandpopculture.com/wp-content/uploads/2017/06/HorribleSubs-One-Punch-Man-05-1080p.mkv0079-1024x576.jpg",
-        title: "One Punch Man",
-        author: "Eiichiro Oda",
-        progress: "63/64",
-        status: "Reading",
-        rating: 8,
-    },
-    {
-        id: 2,
-        imgUrl: "https://i.imgflip.com/7w3anz.jpg",
-        title: "Toriko",
-        author: "Eiichiro Oda",
-        progress: "112/112",
-        status: "Reading",
-        rating: 9.5,
-    },
-];
+import { useFecthAllMangaItems } from "../hooks/useFirestore";
 
 const Manga = () => {
     // fetch manga from firebase with custom hook
+    const mangaItems = useFecthAllMangaItems();
+    console.log("mangaItems: ", mangaItems);
 
     useEffect(() => {
         // console.log("");
     }, []);
-
-    // temp fetch manga from firebase
-    const fetchedMangaItem = useFecthMediaItem("jo1qwf9aqG2DI3XmpyWz");
-    console.log("fetched manga item: ", fetchedMangaItem);
 
     // handle filter
     const handleFilterByStatus = (status: string) => {
@@ -107,7 +74,7 @@ const Manga = () => {
                 }}
             />
             <div className="flex flex-col items-center justify-center w-full gap-8">
-                {manga.map((manga) => (
+                {mangaItems.map((manga) => (
                     <MangaCell key={manga.id} {...manga} />
                 ))}
             </div>
