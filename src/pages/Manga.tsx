@@ -1,4 +1,6 @@
 // dependencies
+import { useEffect, useState } from "react";
+import type { MangaItem } from "../utility/interfaces";
 
 // components
 import MangaCell from "../components/media/MangaCell";
@@ -7,61 +9,81 @@ import Search from "../components/common/Search";
 
 // utility
 import { removeStartAndEndWhitespace } from "../utility/manipulateStr";
-
-// temp seed manga
-const manga = [
-    {
-        id: 0,
-        imgUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgcqp4aZoigwFfalwhgtv4txxFk-2KVD3HHQ&s",
-        title: "One Piece",
-        author: "Eiichiro Oda",
-        progress: "20/1335",
-        status: "Reading",
-        rating: 7,
-    },
-    {
-        id: 1,
-        imgUrl: "https://christandpopculture.com/wp-content/uploads/2017/06/HorribleSubs-One-Punch-Man-05-1080p.mkv0079-1024x576.jpg",
-        title: "One Punch Man",
-        author: "Eiichiro Oda",
-        progress: "63/64",
-        status: "Reading",
-        rating: 8,
-    },
-    {
-        id: 2,
-        imgUrl: "https://i.imgflip.com/7w3anz.jpg",
-        title: "Toriko",
-        author: "Eiichiro Oda",
-        progress: "112/112",
-        status: "Reading",
-        rating: 9.5,
-    },
-];
+import { useFecthAllMangaItems } from "../hooks/useFirestore";
+// import { mangaSeedData } from "../utility/seedData";
 
 const Manga = () => {
-    // state
+    // fetch manga from firebase with custom hook
+    const {mangaItems, isLoading, error} = useFecthAllMangaItems();
+    const [filteredMangaItems, setFilteredMangaItems] = useState<MangaItem[]>([]);
+    // const [filteredMangaItems, setFilteredMangaItems] = useState<MangaItem[]>(mangaSeedData);
+    const [ratingFilterState, setRatingFilterState] = useState<string>("Dsc");
+    const [statusFilterState, setStatusFilterState] = useState<string>("Status: None");
 
-    // handle filter
+    useEffect(() => {
+        console.log("mangaItems updated:", mangaItems);
+        setFilteredMangaItems(mangaItems);
+    }, [mangaItems]);
+
+
+    // handle sort by rating
+    const handleRatingFilter = () => {
+        if (ratingFilterState === "Dsc") {
+            setRatingFilterState("Asc");
+            const sortedItems = [...filteredMangaItems].sort(
+                (a, b) => a.rating - b.rating
+            );
+            setFilteredMangaItems(sortedItems);
+        } else {
+            setRatingFilterState("Dsc");
+            const sortedItems = [...filteredMangaItems].sort(
+                (a, b) => b.rating - a.rating
+            );
+            setFilteredMangaItems(sortedItems);
+        }
+    }
+
+    // handle sort by status
     const handleFilterByStatus = (status: string) => {
-        console.log("filter by status: ", status);
-    };
-    const handleFilterByRating = (rating: number) => {
-        console.log("filter by rating: ", rating);
+        // reset filtered items
+        // setFilteredMangaItems(mangaItems);
+
+        // clear status filter
+        if (status === "None") {
+            setFilteredMangaItems(mangaItems);
+            return;
+        }
+
+        // update status tn label
+        setStatusFilterState(`Status: ${status}`);
+        // sort by status 
+        const filteredItems = mangaItems.filter((item) => item.status == status);
+        setFilteredMangaItems(filteredItems);
     };
 
     // handle search
     const handleSearch = (query: string) => {
+        // reset filtered items
+        setFilteredMangaItems(mangaItems);
         // ignore empty queries
         if (!query) return;
         if (/^\s*$/.test(query)) return; // only whitespace...racist
 
         // trim off start and end whitespace
         query = removeStartAndEndWhitespace(query);
+        // convert to lowercase
+        query = query.toLowerCase();
 
-        console.log(`search for: "${query}"`);
+        // console.log(`search for: "${query}"`);
+        const filteredItems = mangaItems.filter((item) =>
+            item.title.toLocaleLowerCase().includes(query)
+        );
+        setFilteredMangaItems(filteredItems);
+        console.log(filteredItems);
     };
 
+    if (isLoading) { return <div>Loading...</div>; }
+    if (error) { return <div>Error: {error.message}</div>; }
     return (
         <div className="flex flex-col items-center justify-start py-10 min-h-svh bg-gray-600 px-15">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">
@@ -69,10 +91,10 @@ const Manga = () => {
             </h1>
             <p className="text-lg text-gray-600 mb-8">manga stuff below</p>
             <div className="flex items-center justify-center gap-4 mb-8">
-                <p>Filter by:</p>
                 <MediaStatusBtn
-                    currentStatus={"Select Status"}
+                    currentStatus={statusFilterState}
                     options={[
+                        "None",
                         "Reading",
                         "Completed",
                         "On Hold",
@@ -83,13 +105,9 @@ const Manga = () => {
                         handleFilterByStatus(newStatus);
                     }}
                 />
-                <MediaStatusBtn
-                    currentStatus={"Select Rating"}
-                    options={["1", "2", "3", "4", "5"]}
-                    onSelect={(newRating) => {
-                        handleFilterByRating(parseInt(newRating));
-                    }}
-                />
+                <button onClick={handleRatingFilter}>
+                    {ratingFilterState}
+                </button>
             </div>
             <Search
                 onClick={(query) => {
@@ -97,7 +115,10 @@ const Manga = () => {
                 }}
             />
             <div className="flex flex-col items-center justify-center w-full gap-8">
-                {manga.map((manga) => (
+                {filteredMangaItems.length === 0 && (
+                    <p className="text-gray-700">No manga found.</p>
+                )}
+                {filteredMangaItems.map((manga) => (
                     <MangaCell key={manga.id} {...manga} />
                 ))}
             </div>
