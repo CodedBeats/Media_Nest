@@ -23,14 +23,29 @@ export const useFecthMangaItem = (id: string) => {
 // custom hook to fetch all manga items
 export const useFecthAllMangaItems = () => {
     const [mangaItems, setMangaItems] = useState<MangaItem[]>([]);
+    const [isLoading, setLoading] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
 
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const data = await fetchAllMangaItems();
+            setMangaItems(data);
+        } catch (err: string | unknown) {
+            console.error(err);
+            if (err instanceof Error) {
+                setError(err);
+            } else {
+                setError(new Error(String(err)));
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+    
     useEffect(() => {
-        const fetchData = async () => {
-            const mediaData = await fetchAllMangaItems();
-            setMangaItems(mediaData);
-        };
         fetchData();
     }, []);
 
-    return mangaItems;
+    return {mangaItems, isLoading, error};
 };

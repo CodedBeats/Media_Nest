@@ -16,7 +16,7 @@ export const mangaSeedData: MangaItem[] = [
         title: "One Punch Man",
         author: "Eiichiro Oda",
         progress: "63/64",
-        status: "Reading",
+        status: "On Hold",
         rating: 8,
     },
     {
@@ -25,7 +25,7 @@ export const mangaSeedData: MangaItem[] = [
         title: "Toriko",
         author: "Eiichiro Oda",
         progress: "112/112",
-        status: "Reading",
+        status: "Completed",
         rating: 9.5,
     },
 ];
