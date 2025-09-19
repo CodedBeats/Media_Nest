@@ -1,4 +1,6 @@
 // dependencies
+import { useEffect, useState } from "react";
+import type { MangaItem } from "../utility/interfaces";
 
 // components
 import MangaCell from "../components/media/MangaCell";
@@ -7,13 +9,16 @@ import Search from "../components/common/Search";
 
 // utility
 import { removeStartAndEndWhitespace } from "../utility/manipulateStr";
-import { useEffect } from "react";
-import { useFecthAllMangaItems } from "../hooks/useFirestore";
+// import { useFecthAllMangaItems } from "../hooks/useFirestore";
+import { mangaSeedData } from "../utility/seedData";
 
 const Manga = () => {
     // fetch manga from firebase with custom hook
-    const mangaItems = useFecthAllMangaItems();
-    console.log("mangaItems: ", mangaItems);
+    // const [filteredMangaItems, setFilteredMangaItems] = useState<MangaItem[]>(
+    //     useFecthAllMangaItems()
+    // );
+    const [filteredMangaItems, setFilteredMangaItems] =
+        useState<MangaItem[]>(mangaSeedData);
 
     useEffect(() => {
         // console.log("");
@@ -21,7 +26,7 @@ const Manga = () => {
 
     // handle filter
     const handleFilterByStatus = (status: string) => {
-        console.log("filter by status: ", status);
+        console.log("filter by rating: ", status);
     };
     const handleFilterByRating = (rating: number) => {
         console.log("filter by rating: ", rating);
@@ -29,14 +34,24 @@ const Manga = () => {
 
     // handle search
     const handleSearch = (query: string) => {
+        // reset filtered items
+        setFilteredMangaItems(mangaSeedData);
         // ignore empty queries
         if (!query) return;
         if (/^\s*$/.test(query)) return; // only whitespace...racist
 
         // trim off start and end whitespace
         query = removeStartAndEndWhitespace(query);
+        // convert to lowercase
+        query = query.toLowerCase();
 
         console.log(`search for: "${query}"`);
+
+        const filteredItems = filteredMangaItems.filter((item) =>
+            item.title.toLocaleLowerCase().includes(query)
+        );
+        setFilteredMangaItems(filteredItems);
+        console.log(filteredItems);
     };
 
     return (
@@ -74,7 +89,7 @@ const Manga = () => {
                 }}
             />
             <div className="flex flex-col items-center justify-center w-full gap-8">
-                {mangaItems.map((manga) => (
+                {filteredMangaItems.map((manga) => (
                     <MangaCell key={manga.id} {...manga} />
                 ))}
             </div>
