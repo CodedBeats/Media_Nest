@@ -17,19 +17,32 @@ const Manga = () => {
     // const [filteredMangaItems, setFilteredMangaItems] = useState<MangaItem[]>(
     //     useFecthAllMangaItems()
     // );
-    const [filteredMangaItems, setFilteredMangaItems] =
-        useState<MangaItem[]>(mangaSeedData);
+    const [ratingFilterState, setRatingFilterState] = useState<string>("Dsc");
+    const [filteredMangaItems, setFilteredMangaItems] = useState<MangaItem[]>(mangaSeedData);
 
     useEffect(() => {
         // console.log("");
     }, []);
 
+    const handleRatingFilter = () => {
+        if (ratingFilterState === "Dsc") {
+            setRatingFilterState("Asc");
+            const sortedItems = [...filteredMangaItems].sort(
+                (a, b) => a.rating - b.rating
+            );
+            setFilteredMangaItems(sortedItems);
+        } else {
+            setRatingFilterState("Dsc");
+            const sortedItems = [...filteredMangaItems].sort(
+                (a, b) => b.rating - a.rating
+            );
+            setFilteredMangaItems(sortedItems);
+        }
+    }
+
     // handle filter
     const handleFilterByStatus = (status: string) => {
         console.log("filter by rating: ", status);
-    };
-    const handleFilterByRating = (rating: number) => {
-        console.log("filter by rating: ", rating);
     };
 
     // handle search
@@ -75,13 +88,9 @@ const Manga = () => {
                         handleFilterByStatus(newStatus);
                     }}
                 />
-                <MediaStatusBtn
-                    currentStatus={"Select Rating"}
-                    options={["1", "2", "3", "4", "5"]}
-                    onSelect={(newRating) => {
-                        handleFilterByRating(parseInt(newRating));
-                    }}
-                />
+                <button onClick={handleRatingFilter}>
+                    {ratingFilterState}
+                </button>
             </div>
             <Search
                 onClick={(query) => {
