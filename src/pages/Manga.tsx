@@ -36,7 +36,7 @@ const manga = [
 
 const Manga = () => {
     return (
-        <div className="flex flex-col items-center justify-start py-20 pb-50 min-h-svh bg-gray-600 px-15">
+        <div className="flex flex-col items-center justify-start py-10 pb-50 min-h-svh bg-gray-600 px-15">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">
                 Manga Tracker
             </h1>
