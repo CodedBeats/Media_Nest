@@ -7,6 +7,8 @@ import Search from "../components/common/Search";
 
 // utility
 import { removeStartAndEndWhitespace } from "../utility/manipulateStr";
+import { useEffect } from "react";
+import { useFecthMediaItem } from "../hooks/useFirestore";
 
 // temp seed manga
 const manga = [
@@ -40,7 +42,15 @@ const manga = [
 ];
 
 const Manga = () => {
-    // state
+    // fetch manga from firebase with custom hook
+
+    useEffect(() => {
+        // console.log("");
+    }, []);
+
+    // temp fetch manga from firebase
+    const fetchedMangaItem = useFecthMediaItem("jo1qwf9aqG2DI3XmpyWz");
+    console.log("fetched manga item: ", fetchedMangaItem);
 
     // handle filter
     const handleFilterByStatus = (status: string) => {
