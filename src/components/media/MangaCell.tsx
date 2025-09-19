@@ -44,7 +44,7 @@ const MangaCell = ({
                     <p className="text-lg text-gray-600 mb-2">{author}</p>
                 </div>
                 <p className="w-full text-lg text-gray-800 mb-2">
-                    Progress: {progress}
+                    Chapter: {progress}
                 </p>
                 <div className="flex items-center justify-start gap-4 w-full">
                     <MediaStatusBtn
