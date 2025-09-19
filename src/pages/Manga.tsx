@@ -5,6 +5,9 @@ import MangaCell from "../components/media/MangaCell";
 import MediaStatusBtn from "../components/btns/MediaStatusBtn";
 import Search from "../components/common/Search";
 
+// utility
+import { removeStartAndEndWhitespace } from "../utility/manipulateStr";
+
 // temp seed manga
 const manga = [
     {
@@ -47,8 +50,20 @@ const Manga = () => {
         console.log("filter by rating: ", rating);
     };
 
+    // handle search
+    const handleSearch = (query: string) => {
+        // ignore empty queries
+        if (!query) return;
+        if (/^\s*$/.test(query)) return; // only whitespace...racist
+
+        // trim off start and end whitespace
+        query = removeStartAndEndWhitespace(query);
+
+        console.log(`search for: "${query}"`);
+    };
+
     return (
-        <div className="flex flex-col items-center justify-start py-10 pb-50 min-h-svh bg-gray-600 px-15">
+        <div className="flex flex-col items-center justify-start py-10 min-h-svh bg-gray-600 px-15">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">
                 Manga Tracker
             </h1>
@@ -78,7 +93,7 @@ const Manga = () => {
             </div>
             <Search
                 onClick={(query) => {
-                    console.log("search for: ", query);
+                    handleSearch(query);
                 }}
             />
             <div className="flex flex-col items-center justify-center w-full gap-8">
