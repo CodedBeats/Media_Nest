@@ -1,6 +1,6 @@
 // components
 import { useState } from "react";
-import MediaStatusBtn from "../btns/MediaStatusBtn";
+import { MediaStatusBtn } from "../btns/MediaStatusBtn";
 
 const MangaCell = ({
     imgUrl,

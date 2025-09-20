@@ -137,7 +137,7 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
 };
 
 
-// custon form input
+// custon form input (also cause updating tailwing classes in each div is a pain)
 const CustomInput = ({
     label,
     inputType,

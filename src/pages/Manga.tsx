@@ -4,7 +4,8 @@ import type { MangaItem } from "../utility/interfaces";
 
 // components
 import MangaCell from "../components/media/MangaCell";
-import MediaStatusBtn from "../components/btns/MediaStatusBtn";
+import { MediaStatusBtn } from "../components/btns/MediaStatusBtn";
+import { AddMangaForm } from "../components/media/AddMediaForms";
 import Search from "../components/common/Search";
 
 // utility
@@ -19,6 +20,7 @@ const Manga = () => {
     // const [filteredMangaItems, setFilteredMangaItems] = useState<MangaItem[]>(mangaSeedData);
     const [ratingFilterState, setRatingFilterState] = useState<string>("Dsc");
     const [statusFilterState, setStatusFilterState] = useState<string>("Status: None");
+    const [showAddMangaForm, setShowAddMangaForm] = useState<boolean>(false);
 
     useEffect(() => {
         console.log("mangaItems updated:", mangaItems);
@@ -89,7 +91,12 @@ const Manga = () => {
             <h1 className="text-4xl font-bold text-gray-800 mb-4">
                 Manga Tracker
             </h1>
-            <p className="text-lg text-gray-600 mb-8">manga stuff below</p>
+            <button 
+                className="px-4 py-1 bg-green-900 text-white rounded hover:bg-green-700 transition"
+                onClick={() => setShowAddMangaForm(true)}
+            >
+                Add Manga
+            </button>
             <div className="flex items-center justify-center gap-4 mb-8">
                 <MediaStatusBtn
                     currentStatus={statusFilterState}
@@ -122,6 +129,9 @@ const Manga = () => {
                     <MangaCell key={manga.id} {...manga} />
                 ))}
             </div>
+
+            {/* add manga form */}
+            {showAddMangaForm && <AddMangaForm closeForm={() => setShowAddMangaForm(false)} />}
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const MediaStatusBtn = ({
+export const MediaStatusBtn = ({
     currentStatus,
     options,
     onSelect,
@@ -60,4 +60,3 @@ const MediaStatusBtn = ({
     );
 };
 
-export default MediaStatusBtn;
