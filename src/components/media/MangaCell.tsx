@@ -31,11 +31,15 @@ const MangaCell = ({
 
     return (
         <div className="flex items-center align-center justify-between gap-6 w-full h-full bg-gray-400 hover:bg-[#bbbbbb] transition rounded-2xl">
-            <img
-                src={imgUrl}
-                alt="manga cover"
-                className="w-30 h-30 object-cover"
-            />
+            {/* background image */}
+            <div className="w-30 h-30 flex items-center justify-center">
+                <img
+                    src={imgUrl}
+                    alt="manga cover"
+                    className="w-full h-full object-cover"
+                />
+            </div>
+            {/* manga title, author, progress, status */}
             <div className="flex flex-col items-start justify-center w-full h-30 gap-0.5">
                 <div className="text-left flex items-center justify-start w-full gap-1">
                     <h1 className="text-2xl font-bold text-gray-800 mb-4">
@@ -70,6 +74,7 @@ const MangaCell = ({
                     )}
                 </div>
             </div>
+            {/* rating */}
             <div className="flex flex-col items-center justify-center h-full pr-6">
                 <p className="text-gray-600 pr-6">Rating</p>
                 <p className="text-lg text-gray-800 pr-6">{rating}</p>
