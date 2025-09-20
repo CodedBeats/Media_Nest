@@ -53,11 +53,12 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
         setFormData({
             title: "",
             author: "",
-            status: "n/a",
+            status: "Status: None",
             rating: 0,
-            progress: "n/a",
+            progress: "/",
             imgUrl: "",
         });
+        setStatusLabelState("Status: None");
     };
 
 
@@ -98,6 +99,7 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
                 <MediaStatusBtn
                     currentStatus={statusLabelState}
                     options={[
+                        "Status: None",
                         "Reading",
                         "Completed",
                         "On Hold",
