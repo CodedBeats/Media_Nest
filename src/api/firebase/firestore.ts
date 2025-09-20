@@ -1,11 +1,13 @@
 // firebase config
 import { db } from "./firebaseConfig";
 // dependencies
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { type MangaItem } from "../../utility/interfaces";
 
 const mangaCollection = "manga";
 
+
+// === READ === //
 // fetch manga item by id
 export const fetchMangaItemByID = async (
     id: string
@@ -30,4 +32,16 @@ export const fetchAllMangaItems = async (): Promise<MangaItem[]> => {
         mangaItems.push({ id: doc.id, ...doc.data() } as MangaItem);
     });
     return mangaItems;
+};
+
+
+// === CREATE === //
+// create manga item
+export const createMangaItem = async (mangaItem: MangaItem): Promise<void> => {
+    try {
+        await addDoc(collection(db, mangaCollection), mangaItem);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+        throw e;
+    }
 };
