@@ -1,5 +1,5 @@
 export interface MangaItem {
-    id: string;
+    id?: string;
     title: string;
     author: string;
     imgUrl: string;
