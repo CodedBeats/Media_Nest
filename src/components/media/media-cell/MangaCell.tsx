@@ -101,7 +101,9 @@ const MangaCell = ({
             {/* rating */}
             <div className="flex flex-col items-center justify-center h-full pr-6">
                 <p className="text-gray-600">Rating</p>
-                <p className="text-lg text-gray-800">{rating}</p>
+                <p className="text-lg text-gray-800">
+                    {typeof rating === "number" && rating > 0 ? rating : "Unrated"}
+                </p>
                 <button
                     className="px-4 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition"
                     onClick={handleShowEditMangaForm}
