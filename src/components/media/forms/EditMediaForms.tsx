@@ -5,7 +5,7 @@ import { useState } from "react";
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 
 // api
-// import { createMangaItem } from "../../../api/firebase/firestore";
+import { updateMangaItemByID } from "../../../api/firebase/firestore";
 
 // utility
 import { type MangaItem } from "../../../utility/interfaces";
@@ -13,6 +13,7 @@ import { checkEmptyInput } from "../../../utility/manipulateStr";
 
 // add manga form
 export const EditMangaForm = ({
+    id,
     title,
     author,
     status,
@@ -21,6 +22,7 @@ export const EditMangaForm = ({
     imgUrl,
     closeForm,
 }: {
+    id: string;
     title: string;
     author: string;
     status: string;
@@ -59,13 +61,7 @@ export const EditMangaForm = ({
         }
 
         // edit manga item
-        // createMangaItem(formData)
-        // .then(() => {
-        //     console.log("manga added successfully");
-        // })
-        // .catch(error => {
-        //     console.error("Failed to add manga:", error);
-        // });
+        updateMangaItemByID(id, formData);
         console.log("edited manga item:", formData);
 
         // close form

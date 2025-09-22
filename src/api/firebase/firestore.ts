@@ -21,9 +21,7 @@ export const createMangaItem = async (mangaItem: MangaItem): Promise<void> => {
 
 // === READ === //
 // fetch manga item by id
-export const fetchMangaItemByID = async (
-    id: string
-): Promise<MangaItem | null> => {
+export const fetchMangaItemByID = async (id: string): Promise<MangaItem | null> => {
     const docRef = doc(db, mangaCollection, id);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
@@ -49,13 +47,11 @@ export const fetchAllMangaItems = async (): Promise<MangaItem[]> => {
 
 // === UPDATE === //
 // update manga item by id
-export const updateMangaItemByID = async (updateMangaData: MangaItem): Promise<void> => {
-    const docRef = doc(db, mangaCollection, updateMangaData.id as string);
-    // seperate 'id' from the update data (and don't parse it in the updated object)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, ...dataToUpdate } = updateMangaData;
+export const updateMangaItemByID = async (mangaID: string, updateMangaData: object): Promise<void> => {
+    console.log(mangaID)
+    const docRef = doc(db, mangaCollection, mangaID);
     try {
-        await updateDoc(docRef, dataToUpdate);
+        await updateDoc(docRef, updateMangaData);
     } catch (e) {
         console.error("error updating document: ", e);
         throw e;

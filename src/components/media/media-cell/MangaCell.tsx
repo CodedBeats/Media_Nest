@@ -6,13 +6,15 @@ import { EditMangaForm } from "../forms/EditMediaForms";
 
 
 const MangaCell = ({
+    id,
     imgUrl,
     title,
     author,
     progress,
     status,
-    rating,
+    rating
 }: {
+    id?: string;
     imgUrl?: string;
     title?: string;
     author?: string;
@@ -102,6 +104,7 @@ const MangaCell = ({
             {/* edit manga form */}
             {showEditMangaForm && ( 
                 <EditMangaForm 
+                    id={id || ""}
                     title={title || ""}
                     author={author || ""} 
                     status={labelStatus} 
