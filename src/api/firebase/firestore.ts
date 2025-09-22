@@ -1,10 +1,22 @@
 // firebase config
 import { db } from "./firebaseConfig";
 // dependencies
-import { addDoc, collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { type MangaItem } from "../../utility/interfaces";
 
 const mangaCollection = "manga";
+
+
+// === CREATE === //
+// create manga item
+export const createMangaItem = async (mangaItem: MangaItem): Promise<void> => {
+    try {
+        await addDoc(collection(db, mangaCollection), mangaItem);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+        throw e;
+    }
+};
 
 
 // === READ === //
@@ -35,13 +47,23 @@ export const fetchAllMangaItems = async (): Promise<MangaItem[]> => {
 };
 
 
-// === CREATE === //
-// create manga item
-export const createMangaItem = async (mangaItem: MangaItem): Promise<void> => {
+// === UPDATE === //
+// update manga item by id
+export const updateMangaItemByID = async (updateMangaData: MangaItem): Promise<void> => {
+    const docRef = doc(db, mangaCollection, updateMangaData.id as string);
+    // seperate 'id' from the update data (and don't parse it in the updated object)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...dataToUpdate } = updateMangaData;
     try {
-        await addDoc(collection(db, mangaCollection), mangaItem);
+        await updateDoc(docRef, dataToUpdate);
     } catch (e) {
-        console.error("Error adding document: ", e);
+        console.error("error updating document: ", e);
         throw e;
     }
-};
+}
+
+
+// === DELETE === //
+
+
+
