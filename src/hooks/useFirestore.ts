@@ -47,5 +47,9 @@ export const useFecthAllMangaItems = () => {
         fetchData();
     }, []);
 
-    return {mangaItems, isLoading, error};
+    const refetch = async () => {
+        await fetchData();
+    };
+
+    return {mangaItems, isLoading, error, refetch};
 };
