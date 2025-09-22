@@ -1,6 +1,9 @@
 // components
 import { useState } from "react";
-import { MediaStatusBtn } from "../btns/MediaStatusBtn";
+import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
+import { EditMangaForm } from "../forms/EditMediaForms";
+
+
 
 const MangaCell = ({
     imgUrl,
@@ -20,6 +23,7 @@ const MangaCell = ({
     // state
     const originalStatus = status;
     const [labelStatus, setLabelStatus] = useState(status ?? "Select Status");
+    const [showEditMangaForm, setShowEditMangaForm] = useState(false);
 
     // handle status change
     const handleUpdateMangaStatus = () => {
@@ -29,8 +33,17 @@ const MangaCell = ({
         console.log("updating manga status to", labelStatus);
     };
 
+    // show and hide edit manga form
+    const handleShowEditMangaForm = () => {
+        setShowEditMangaForm(true);
+    };
+    const handleCloseEditMangaForm = () => {
+        setShowEditMangaForm(false);
+    }
+
+
     return (
-        <div className="flex items-center align-center justify-between gap-6 w-full h-full bg-gray-400 hover:bg-[#bbbbbb] transition rounded-2xl">
+        <div className="flex items-center align-center justify-between gap-6 w-full h-full bg-[#aaa] border-1 border-solid hover:border-red-500 transition rounded-2xl">
             {/* background image */}
             <div className="w-30 h-30 flex items-center justify-center">
                 <img
@@ -76,9 +89,28 @@ const MangaCell = ({
             </div>
             {/* rating */}
             <div className="flex flex-col items-center justify-center h-full pr-6">
-                <p className="text-gray-600 pr-6">Rating</p>
-                <p className="text-lg text-gray-800 pr-6">{rating}</p>
+                <p className="text-gray-600">Rating</p>
+                <p className="text-lg text-gray-800">{rating}</p>
+                <button
+                    className="px-4 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition"
+                    onClick={handleShowEditMangaForm}
+                >
+                    Edit
+                </button>
             </div>
+
+            {/* edit manga form */}
+            {showEditMangaForm && ( 
+                <EditMangaForm 
+                    title={title || ""}
+                    author={author || ""} 
+                    status={labelStatus} 
+                    rating={rating || 0} 
+                    progress={progress || ""} 
+                    imgUrl={imgUrl || ""} 
+                    closeForm={handleCloseEditMangaForm}
+                />
+            )}
         </div>
     );
 };

@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import type { MangaItem } from "../utility/interfaces";
 
 // components
-import MangaCell from "../components/media/MangaCell";
+import MangaCell from "../components/media/media-cell/MangaCell";
 import { MediaStatusBtn } from "../components/btns/MediaStatusBtn";
-import { AddMangaForm } from "../components/media/AddMediaForms";
+import { AddMangaForm } from "../components/media/forms/AddMediaForms";
 import Search from "../components/common/Search";
 
 // utility
@@ -15,18 +15,20 @@ import { useFecthAllMangaItems } from "../hooks/useFirestore";
 
 const Manga = () => {
     // fetch manga from firebase with custom hook
-    const {mangaItems, isLoading, error} = useFecthAllMangaItems();
-    const [filteredMangaItems, setFilteredMangaItems] = useState<MangaItem[]>([]);
+    const { mangaItems, isLoading, error } = useFecthAllMangaItems();
+    const [filteredMangaItems, setFilteredMangaItems] = useState<MangaItem[]>(
+        []
+    );
     // const [filteredMangaItems, setFilteredMangaItems] = useState<MangaItem[]>(mangaSeedData);
     const [ratingFilterState, setRatingFilterState] = useState<string>("Dsc");
-    const [statusFilterState, setStatusFilterState] = useState<string>("Status: None");
+    const [statusFilterState, setStatusFilterState] =
+        useState<string>("Status: None");
     const [showAddMangaForm, setShowAddMangaForm] = useState<boolean>(false);
 
     useEffect(() => {
         console.log("mangaItems updated:", mangaItems);
         setFilteredMangaItems(mangaItems);
     }, [mangaItems]);
-
 
     // handle sort by rating
     const handleRatingFilter = () => {
@@ -43,7 +45,7 @@ const Manga = () => {
             );
             setFilteredMangaItems(sortedItems);
         }
-    }
+    };
 
     // handle sort by status
     const handleFilterByStatus = (status: string) => {
@@ -58,8 +60,10 @@ const Manga = () => {
 
         // update status tn label
         setStatusFilterState(`Status: ${status}`);
-        // sort by status 
-        const filteredItems = mangaItems.filter((item) => item.status == status);
+        // sort by status
+        const filteredItems = mangaItems.filter(
+            (item) => item.status == status
+        );
         setFilteredMangaItems(filteredItems);
     };
 
@@ -84,14 +88,18 @@ const Manga = () => {
         console.log(filteredItems);
     };
 
-    if (isLoading) { return <div>Loading...</div>; }
-    if (error) { return <div>Error: {error.message}</div>; }
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
     return (
         <div className="flex flex-col items-center justify-start py-10 min-h-svh bg-gray-600 px-15">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">
                 Manga Tracker
             </h1>
-            <button 
+            <button
                 className="px-4 py-1 bg-green-900 text-white rounded hover:bg-green-700 transition"
                 onClick={() => setShowAddMangaForm(true)}
             >
@@ -131,7 +139,9 @@ const Manga = () => {
             </div>
 
             {/* add manga form */}
-            {showAddMangaForm && <AddMangaForm closeForm={() => setShowAddMangaForm(false)} />}
+            {showAddMangaForm && (
+                <AddMangaForm closeForm={() => setShowAddMangaForm(false)} />
+            )}
         </div>
     );
 };

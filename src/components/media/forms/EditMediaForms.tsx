@@ -2,69 +2,82 @@
 import { useState } from "react";
 
 // components
-import { MediaStatusBtn } from "../btns/MediaStatusBtn";
+import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 
 // api
-import { createMangaItem } from "../../api/firebase/firestore";
+// import { createMangaItem } from "../../../api/firebase/firestore";
 
 // utility
-import { type MangaItem } from "../../utility/interfaces";
-import { checkEmptyInput } from "../../utility/manipulateStr";
-
+import { type MangaItem } from "../../../utility/interfaces";
+import { checkEmptyInput } from "../../../utility/manipulateStr";
 
 // add manga form
-export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
+export const EditMangaForm = ({
+    title,
+    author,
+    status,
+    rating,
+    progress,
+    imgUrl,
+    closeForm,
+}: {
+    title: string;
+    author: string;
+    status: string;
+    rating: number;
+    progress: string;
+    imgUrl: string;
+    closeForm: () => void;
+}) => {
     // state
     const [formData, setFormData] = useState<MangaItem>({
-        title: "",
-        author: "",
-        status: "n/a",
-        rating: 0,
-        progress: "n/a",
-        imgUrl: "",
+        title: title,
+        author: author,
+        status: status,
+        rating: rating,
+        progress: progress,
+        imgUrl: imgUrl,
     });
-    const [statusLabelState, setStatusLabelState] = useState<string>("Status: None");
+    const [statusLabelState, setStatusLabelState] = useState<string>(status);
 
     // handle set status
     const handleSetStatus = (status: string) => {
         setStatusLabelState(status);
-        setFormData({...formData, status: status});
-    }
-
+        setFormData({ ...formData, status: status });
+    };
 
     // handle create manga item
-    const handleCreateMangaItem = () => {
+    const handleEditMangaItem = () => {
         // validate form data
-        if (!checkEmptyInput(formData.title) || !checkEmptyInput(formData.author) || !checkEmptyInput(formData.imgUrl)) {
+        if (
+            !checkEmptyInput(formData.title) ||
+            !checkEmptyInput(formData.author) ||
+            !checkEmptyInput(formData.imgUrl)
+        ) {
             alert("Required fields: Title, Author, Image URL");
             return;
         }
 
-        // create manga item
-        createMangaItem(formData)
-        .then(() => {
-            console.log("manga added successfully");
-        })
-        .catch(error => {
-            console.error("Failed to add manga:", error);
-        });
+        // edit manga item
+        // createMangaItem(formData)
+        // .then(() => {
+        //     console.log("manga added successfully");
+        // })
+        // .catch(error => {
+        //     console.error("Failed to add manga:", error);
+        // });
+        console.log("edited manga item:", formData);
 
-        // reset form data
-        setFormData({
-            title: "",
-            author: "",
-            status: "Status: None",
-            rating: 0,
-            progress: "/",
-            imgUrl: "",
-        });
-        setStatusLabelState("Status: None");
+        // close form
+        closeForm();
     };
-
 
     return (
         <div className="z-10 absolute top-0 left-0 w-full h-full py-5 px-32 bg-gray-800 bg-opacity-50 flex flex-col items-center justify-center gap-6">
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" onClick={closeForm}>
+            <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                onClick={closeForm}
+            >
                 Close
             </button>
             <CustomInput
@@ -73,7 +86,7 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
                 placeholder="Image URL"
                 value={formData.imgUrl}
                 onChange={(e) => {
-                    setFormData({...formData, imgUrl: e.target.value});
+                    setFormData({ ...formData, imgUrl: e.target.value });
                 }}
             />
             <CustomInput
@@ -82,7 +95,7 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
                 placeholder="Manga Title"
                 value={formData.title}
                 onChange={(e) => {
-                    setFormData({...formData, title: e.target.value});
+                    setFormData({ ...formData, title: e.target.value });
                 }}
             />
             <CustomInput
@@ -91,15 +104,16 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
                 placeholder="Manga Author"
                 value={formData.author}
                 onChange={(e) => {
-                    setFormData({...formData, author: e.target.value});
+                    setFormData({ ...formData, author: e.target.value });
                 }}
             />
             <div className="flex flex-col items-center justify-start w-full gap-4">
-                <label className="text-[#D69500] text-3xl font-bold">Status</label>
+                <label className="text-[#D69500] text-3xl font-bold">
+                    Status
+                </label>
                 <MediaStatusBtn
                     currentStatus={statusLabelState}
                     options={[
-                        "Status: None",
                         "Reading",
                         "Completed",
                         "On Hold",
@@ -117,7 +131,7 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
                 placeholder="Chpater progress: ##/##"
                 value={formData.progress}
                 onChange={(e) => {
-                    setFormData({...formData, progress: e.target.value});
+                    setFormData({ ...formData, progress: e.target.value });
                 }}
             />
             <CustomInput
@@ -126,18 +140,23 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
                 placeholder="Manga Rating: 1-10"
                 value={formData.rating.toString()}
                 onChange={(e) => {
-                    setFormData({...formData, rating: parseInt(e.target.value)});
+                    setFormData({
+                        ...formData,
+                        rating: parseInt(e.target.value),
+                    });
                 }}
             />
 
-            {/* create manga */}
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" onClick={handleCreateMangaItem}>
-                Create Manga
+            {/* save manga */}
+            <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                onClick={handleEditMangaItem}
+            >
+                Save Manga
             </button>
         </div>
     );
 };
-
 
 // custon form input (also cause updating tailwing classes in each div is a pain)
 const CustomInput = ({
