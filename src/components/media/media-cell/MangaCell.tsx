@@ -3,6 +3,9 @@ import { useState } from "react";
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 import { EditMangaForm } from "../forms/EditMediaForms";
 
+// api
+import { updateMangaItemByID } from "../../../api/firebase/firestore";
+
 
 
 const MangaCell = ({
@@ -31,8 +34,14 @@ const MangaCell = ({
     const handleUpdateMangaStatus = () => {
         if (labelStatus == originalStatus) return;
 
-        // update manga with firebase api call
-        console.log("updating manga status to", labelStatus);
+        // update manga status with firebase api call
+        updateMangaItemByID(id || "", { status: labelStatus })
+        .then(() => {
+            console.log("Manga status updated successfully");
+        })
+        .catch((error) => {
+            console.error("Error updating manga status: ", error);
+        });
     };
 
     // show and hide edit manga form
