@@ -17,13 +17,12 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
     const [formData, setFormData] = useState<MangaItem>({
         title: "",
         author: "",
-        status: "n/a",
+        status: "Status: None",
         rating: 0,
-        progress: "n/a",
+        progress: "/",
         imgUrl: "",
     });
-    const [statusLabelState, setStatusLabelState] =
-        useState<string>("Status: None");
+    const [statusLabelState, setStatusLabelState] = useState<string>("Status: None");
 
     // handle set status
     const handleSetStatus = (status: string) => {
