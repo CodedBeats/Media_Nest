@@ -1,6 +1,5 @@
 // dependencies
-import { useEffect, useState } from "react";
-import type { MangaItem } from "../utility/interfaces";
+import { useMemo, useState } from "react";
 
 // components
 import MangaCell from "../components/media/media-cell/MangaCell";
@@ -9,91 +8,74 @@ import { AddMangaForm } from "../components/media/forms/AddMediaForms";
 import Search from "../components/common/Search";
 
 // utility
-import { removeStartAndEndWhitespace } from "../utility/manipulateStr";
 import { useFecthAllMangaItems } from "../hooks/useFirestore";
 // import { mangaSeedData } from "../utility/seedData";
 
+
 const Manga = () => {
     // fetch manga from firebase with custom hook
-    const { mangaItems, isLoading, error } = useFecthAllMangaItems();
-    const [filteredMangaItems, setFilteredMangaItems] = useState<MangaItem[]>(
-        []
-    );
+    const { mangaItems, isLoading, error, refetch } = useFecthAllMangaItems();
     // const [filteredMangaItems, setFilteredMangaItems] = useState<MangaItem[]>(mangaSeedData);
-    const [ratingFilterState, setRatingFilterState] = useState<string>("Dsc");
-    const [statusFilterState, setStatusFilterState] =
-        useState<string>("Status: None");
+    const [ratingFilterState, setRatingFilterState] = useState<"Asc" | "Dsc">("Dsc");
+    const [statusFilterState, setStatusFilterState] = useState<string>("None");
+    const [searchQuery, setSearchQuery] = useState<string>("");
     const [showAddMangaForm, setShowAddMangaForm] = useState<boolean>(false);
 
-    useEffect(() => {
-        console.log("mangaItems updated:", mangaItems);
-        setFilteredMangaItems(mangaItems);
-    }, [mangaItems]);
+    // derived filtered list
+    const filteredMangaItems = useMemo(() => {
+        let items = [...mangaItems];
+
+        // apply search filter
+        if (searchQuery.trim()) {
+            const q = searchQuery.trim().toLowerCase();
+            items = items.filter((item) =>
+            item.title.toLowerCase().includes(q)
+            );
+        }
+
+        // apply status filter
+        if (statusFilterState !== "None") {
+            items = items.filter((item) => item.status === statusFilterState);
+        }
+
+        // apply rating sort
+        if (ratingFilterState === "Asc") {
+            items.sort((a, b) => (a.rating ?? 0) - (b.rating ?? 0));
+        } else {
+            items.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+        }
+
+        return items;
+    }, [mangaItems, ratingFilterState, statusFilterState, searchQuery]);
+
+
+    // handle refresh manga list
+    const handleRefresh = async () => {
+        await refetch();
+        setStatusFilterState("None");
+        setRatingFilterState("Dsc");
+        setSearchQuery("");
+    };
 
     // handle sort by rating
     const handleRatingFilter = () => {
-        if (ratingFilterState === "Dsc") {
-            setRatingFilterState("Asc");
-            const sortedItems = [...filteredMangaItems].sort(
-                (a, b) => a.rating - b.rating
-            );
-            setFilteredMangaItems(sortedItems);
-        } else {
-            setRatingFilterState("Dsc");
-            const sortedItems = [...filteredMangaItems].sort(
-                (a, b) => b.rating - a.rating
-            );
-            setFilteredMangaItems(sortedItems);
-        }
+        setRatingFilterState((prev) => (prev === "Dsc" ? "Asc" : "Dsc"));
     };
 
     // handle sort by status
     const handleFilterByStatus = (status: string) => {
-        // reset filtered items
-        // setFilteredMangaItems(mangaItems);
-
-        // clear status filter
-        if (status === "None") {
-            setFilteredMangaItems(mangaItems);
-            return;
-        }
-
-        // update status tn label
-        setStatusFilterState(`Status: ${status}`);
-        // sort by status
-        const filteredItems = mangaItems.filter(
-            (item) => item.status == status
-        );
-        setFilteredMangaItems(filteredItems);
+        setStatusFilterState(status);
     };
 
     // handle search
     const handleSearch = (query: string) => {
-        // reset filtered items
-        setFilteredMangaItems(mangaItems);
-        // ignore empty queries
-        if (!query) return;
-        if (/^\s*$/.test(query)) return; // only whitespace...racist
-
-        // trim off start and end whitespace
-        query = removeStartAndEndWhitespace(query);
-        // convert to lowercase
-        query = query.toLowerCase();
-
-        // console.log(`search for: "${query}"`);
-        const filteredItems = mangaItems.filter((item) =>
-            item.title.toLocaleLowerCase().includes(query)
-        );
-        setFilteredMangaItems(filteredItems);
-        console.log(filteredItems);
+        setSearchQuery(query);
     };
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-    if (error) {
-        return <div>Error: {error.message}</div>;
-    }
+
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
+
     return (
         <div className="flex flex-col items-center justify-start py-10 min-h-svh bg-gray-600 px-15">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">
@@ -104,6 +86,9 @@ const Manga = () => {
                 onClick={() => setShowAddMangaForm(true)}
             >
                 Add Manga
+            </button>
+            <button className="px-4 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition" onClick={handleRefresh}>
+                Refresh List
             </button>
             <div className="flex items-center justify-center gap-4 mb-8">
                 <MediaStatusBtn

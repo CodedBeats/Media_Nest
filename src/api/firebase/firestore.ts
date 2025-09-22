@@ -1,17 +1,27 @@
 // firebase config
 import { db } from "./firebaseConfig";
 // dependencies
-import { addDoc, collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { type MangaItem } from "../../utility/interfaces";
 
 const mangaCollection = "manga";
 
 
+// === CREATE === //
+// create manga item
+export const createMangaItem = async (mangaItem: MangaItem): Promise<void> => {
+    try {
+        await addDoc(collection(db, mangaCollection), mangaItem);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+        throw e;
+    }
+};
+
+
 // === READ === //
 // fetch manga item by id
-export const fetchMangaItemByID = async (
-    id: string
-): Promise<MangaItem | null> => {
+export const fetchMangaItemByID = async (id: string): Promise<MangaItem | null> => {
     const docRef = doc(db, mangaCollection, id);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
@@ -35,13 +45,21 @@ export const fetchAllMangaItems = async (): Promise<MangaItem[]> => {
 };
 
 
-// === CREATE === //
-// create manga item
-export const createMangaItem = async (mangaItem: MangaItem): Promise<void> => {
+// === UPDATE === //
+// update manga item by id
+export const updateMangaItemByID = async (mangaID: string, updateMangaData: object): Promise<void> => {
+    console.log(mangaID)
+    const docRef = doc(db, mangaCollection, mangaID);
     try {
-        await addDoc(collection(db, mangaCollection), mangaItem);
+        await updateDoc(docRef, updateMangaData);
     } catch (e) {
-        console.error("Error adding document: ", e);
+        console.error("error updating document: ", e);
         throw e;
     }
-};
+}
+
+
+// === DELETE === //
+
+
+
