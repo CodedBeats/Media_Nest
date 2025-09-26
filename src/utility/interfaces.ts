@@ -1,3 +1,7 @@
+// dependencies
+import { type User } from "firebase/auth";
+
+
 export interface MangaItem {
     id?: string;
     title: string;
@@ -6,4 +10,12 @@ export interface MangaItem {
     progress: string;
     rating: number;
     status: string;
+}
+
+export interface AuthContextType {
+    user: User | null;
+    loading: boolean;
+    signup: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<void>;
+    logout: () => Promise<void>;
 }
