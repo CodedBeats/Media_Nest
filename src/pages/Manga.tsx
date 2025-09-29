@@ -7,12 +7,19 @@ import { MediaStatusBtn } from "../components/btns/MediaStatusBtn";
 import { AddMangaForm } from "../components/media/forms/AddMediaForms";
 import Search from "../components/common/Search";
 
+// context
+import { useAuth } from "../hooks/useFirebaseAuth";
+
 // utility
 import { useFecthAllMangaItems } from "../hooks/useFirestore";
 // import { mangaSeedData } from "../utility/seedData";
 
 
 const Manga = () => {
+    // context
+    const { user } = useAuth();
+
+    // state
     // fetch manga from firebase with custom hook
     const { mangaItems, isLoading, error, refetch } = useFecthAllMangaItems();
     // const [filteredMangaItems, setFilteredMangaItems] = useState<MangaItem[]>(mangaSeedData);
@@ -81,12 +88,14 @@ const Manga = () => {
             <h1 className="text-4xl font-bold text-gray-800 mb-4">
                 Manga Tracker
             </h1>
-            <button
-                className="px-4 py-1 bg-green-900 text-white rounded hover:bg-green-700 transition"
-                onClick={() => setShowAddMangaForm(true)}
-            >
-                Add Manga
-            </button>
+            {user && (
+                <button
+                    className="px-4 py-1 bg-green-900 text-white rounded hover:bg-green-700 transition"
+                    onClick={() => setShowAddMangaForm(true)}
+                >
+                    Add Manga
+                </button>
+            )}
             <button className="px-4 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition" onClick={handleRefresh}>
                 Refresh List
             </button>
@@ -124,7 +133,7 @@ const Manga = () => {
             </div>
 
             {/* add manga form */}
-            {showAddMangaForm && (
+            {showAddMangaForm && user && (
                 <AddMangaForm closeForm={() => setShowAddMangaForm(false)} />
             )}
         </div>
