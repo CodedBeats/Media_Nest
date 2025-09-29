@@ -11,6 +11,8 @@ import { useAuth } from "../../../hooks/useFirebaseAuth";
 
 const MangaCell = ({
     id,
+    mangadexID,
+    coverUrl,
     imgUrl,
     title,
     author,
@@ -19,6 +21,8 @@ const MangaCell = ({
     rating
 }: {
     id?: string;
+    mangadexID?: string;
+    coverUrl?: string;
     imgUrl?: string;
     title?: string;
     author?: string;
@@ -62,11 +66,21 @@ const MangaCell = ({
         <div className="flex items-center align-center justify-between gap-6 w-full h-full bg-[#aaa] border-1 border-solid hover:border-red-500 transition rounded-2xl">
             {/* background image */}
             <div className="w-30 h-30 flex items-center justify-center">
-                <img
-                    src={imgUrl}
-                    alt="manga cover"
-                    className="w-full h-full object-cover"
-                />
+                {
+                    coverUrl ? (
+                        <img
+                            src={coverUrl}
+                            alt="manga cover"
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <img
+                            src={imgUrl}
+                            alt="manga cover"
+                            className="w-full h-full object-cover"
+                        />
+                    )
+                }
             </div>
             {/* manga title, author, progress, status */}
             <div className="flex flex-col items-start justify-center w-full h-30 gap-0.5">
@@ -125,6 +139,7 @@ const MangaCell = ({
             {showEditMangaForm && user && ( 
                 <EditMangaForm 
                     id={id || ""}
+                    mangadexID={mangadexID || ""}
                     title={title || ""}
                     author={author || ""} 
                     status={labelStatus} 

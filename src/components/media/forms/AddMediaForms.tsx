@@ -15,6 +15,7 @@ import { checkEmptyInput } from "../../../utility/manipulateStr";
 export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
     // state
     const [formData, setFormData] = useState<MangaItem>({
+        mangadexID: "",
         title: "",
         author: "",
         status: "Status: None",
@@ -35,8 +36,7 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
         // validate form data
         if (
             !checkEmptyInput(formData.title) ||
-            !checkEmptyInput(formData.author) ||
-            !checkEmptyInput(formData.imgUrl)
+            !checkEmptyInput(formData.author)
         ) {
             alert("Required fields: Title, Author, Image URL");
             return;
@@ -75,9 +75,18 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
                 label="Cover Image"
                 inputType="text"
                 placeholder="Image URL"
-                value={formData.imgUrl}
+                value={formData.imgUrl || ""}
                 onChange={(e) => {
                     setFormData({ ...formData, imgUrl: e.target.value });
+                }}
+            />
+            <CustomInput
+                label="MangaDex ID"
+                inputType="text"
+                placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                value={formData.mangadexID || ""}
+                onChange={(e) => {
+                    setFormData({ ...formData, mangadexID: e.target.value });
                 }}
             />
             <CustomInput

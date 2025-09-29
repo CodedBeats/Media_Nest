@@ -12,7 +12,6 @@ import { useAuth } from "../hooks/useFirebaseAuth";
 
 // utility
 import { useFecthAllMangaItems } from "../hooks/useFirestore";
-// import { mangaSeedData } from "../utility/seedData";
 
 
 const Manga = () => {
