@@ -2,9 +2,10 @@
 import { useState } from "react";
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 import { EditMangaForm } from "../forms/EditMediaForms";
-
 // api
 import { updateMangaItemByID } from "../../../api/firebase/firestore";
+// context
+import { useAuth } from "../../../hooks/useFirebaseAuth";
 
 
 
@@ -25,8 +26,11 @@ const MangaCell = ({
     status?: string;
     rating?: number;
 }) => {
+    // context
+    const { user } = useAuth();
+
     // state
-    const originalStatus = status;
+    const [originalStatus, setOriginalStatus] = useState(status ?? "Select Status");
     const [labelStatus, setLabelStatus] = useState(status ?? "Select Status");
     const [showEditMangaForm, setShowEditMangaForm] = useState(false);
 
@@ -38,6 +42,7 @@ const MangaCell = ({
         updateMangaItemByID(id || "", { status: labelStatus })
         .then(() => {
             console.log("Manga status updated successfully");
+            setOriginalStatus(labelStatus); // update original status to new status
         })
         .catch((error) => {
             console.error("Error updating manga status: ", error);
@@ -85,7 +90,9 @@ const MangaCell = ({
                             "Plan to Read",
                         ]}
                         onSelect={(newStatus) => {
-                            setLabelStatus(newStatus);
+                            if (user) {
+                                setLabelStatus(newStatus);
+                            } else return;
                         }}
                     />
                     {labelStatus !== originalStatus && (
@@ -104,16 +111,18 @@ const MangaCell = ({
                 <p className="text-lg text-gray-800">
                     {typeof rating === "number" && rating > 0 ? rating : "Unrated"}
                 </p>
-                <button
-                    className="px-4 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition"
-                    onClick={handleShowEditMangaForm}
-                >
-                    Edit
-                </button>
+                { user && (
+                    <button
+                        className="px-4 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition"
+                        onClick={handleShowEditMangaForm}
+                    >
+                        Edit
+                    </button>
+                )}
             </div>
 
             {/* edit manga form */}
-            {showEditMangaForm && ( 
+            {showEditMangaForm && user && ( 
                 <EditMangaForm 
                     id={id || ""}
                     title={title || ""}

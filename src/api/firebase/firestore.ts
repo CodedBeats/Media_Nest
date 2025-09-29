@@ -48,7 +48,7 @@ export const fetchAllMangaItems = async (): Promise<MangaItem[]> => {
 // === UPDATE === //
 // update manga item by id
 export const updateMangaItemByID = async (mangaID: string, updateMangaData: object): Promise<void> => {
-    console.log(mangaID)
+    // console.log(mangaID)
     const docRef = doc(db, mangaCollection, mangaID);
     try {
         await updateDoc(docRef, updateMangaData);
