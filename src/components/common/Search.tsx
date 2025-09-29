@@ -1,3 +1,4 @@
+// dependencies
 import { useState } from "react";
 
 const Search = ({ onClick }: { onClick: (searchQuery: string) => void }) => {
