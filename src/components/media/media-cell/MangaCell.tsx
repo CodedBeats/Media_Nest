@@ -3,11 +3,9 @@ import { useState } from "react";
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 import { EditMangaForm } from "../forms/EditMediaForms";
 // api
-import { updateMangaItemByID } from "../../../api/firebase/firestore";
+import { updateMangaItemByID } from "../../../apis/firebase/firestore";
 // context
 import { useAuth } from "../../../hooks/useFirebaseAuth";
-
-
 
 const MangaCell = ({
     id,
@@ -18,7 +16,7 @@ const MangaCell = ({
     author,
     progress,
     status,
-    rating
+    rating,
 }: {
     id?: string;
     mangadexID?: string;
@@ -44,13 +42,13 @@ const MangaCell = ({
 
         // update manga status with firebase api call
         updateMangaItemByID(id || "", { status: labelStatus })
-        .then(() => {
-            console.log("Manga status updated successfully");
-            setOriginalStatus(labelStatus); // update original status to new status
-        })
-        .catch((error) => {
-            console.error("Error updating manga status: ", error);
-        });
+            .then(() => {
+                console.log("Manga status updated successfully");
+                setOriginalStatus(labelStatus); // update original status to new status
+            })
+            .catch((error) => {
+                console.error("Error updating manga status: ", error);
+            });
     };
 
     // show and hide edit manga form
@@ -66,21 +64,19 @@ const MangaCell = ({
         <div className="flex items-center align-center justify-between gap-6 w-full h-full bg-[#aaa] border-1 border-solid hover:border-red-500 transition rounded-2xl">
             {/* background image */}
             <div className="w-30 h-30 flex items-center justify-center">
-                {
-                    coverUrl ? (
-                        <img
-                            src={coverUrl}
-                            alt="manga cover"
-                            className="w-full h-full object-cover"
-                        />
-                    ) : (
-                        <img
-                            src={imgUrl}
-                            alt="manga cover"
-                            className="w-full h-full object-cover"
-                        />
-                    )
-                }
+                { coverUrl ? (
+                    <img
+                        src={coverUrl}
+                        alt="manga cover"
+                        className="w-full h-full object-cover"
+                    />
+                ) : (
+                    <img
+                        src={imgUrl}
+                        alt="manga cover"
+                        className="w-full h-full object-cover"
+                    />
+                )}
             </div>
             {/* manga title, author, progress, status */}
             <div className="flex flex-col items-start justify-center w-full h-30 gap-0.5">
@@ -136,16 +132,16 @@ const MangaCell = ({
             </div>
 
             {/* edit manga form */}
-            {showEditMangaForm && user && ( 
-                <EditMangaForm 
+            {showEditMangaForm && user && (
+                <EditMangaForm
                     id={id || ""}
                     mangadexID={mangadexID || ""}
                     title={title || ""}
-                    author={author || ""} 
-                    status={labelStatus} 
-                    rating={rating || 0} 
-                    progress={progress || ""} 
-                    imgUrl={imgUrl || ""} 
+                    author={author || ""}
+                    status={labelStatus}
+                    rating={rating || 0}
+                    progress={progress || ""}
+                    imgUrl={imgUrl || ""}
                     closeForm={handleCloseEditMangaForm}
                 />
             )}

@@ -2,10 +2,9 @@
 import { onAuthStateChanged, signOut, type User, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { createContext, useEffect, useState, type ReactNode } from "react";
 // firebase config
-import { auth } from "../api/firebase/firebaseConfig";
+import { auth } from "../apis/firebase/firebaseConfig";
 // interface
 import { type AuthContextType } from "../utility/interfaces";
-
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export default AuthContext;
@@ -37,11 +36,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(null);
     };
 
-
     return (
-        <AuthContext.Provider
-            value={{ user, loading, signup, login, logout }}
-        >
+        <AuthContext.Provider value={{ user, loading, signup, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

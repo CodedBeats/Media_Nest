@@ -5,7 +5,7 @@ import { useState } from "react";
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 
 // api
-import { updateMangaItemByID } from "../../../api/firebase/firestore";
+import { updateMangaItemByID } from "../../../apis/firebase/firestore";
 
 // utility
 import { type MangaItem } from "../../../utility/interfaces";

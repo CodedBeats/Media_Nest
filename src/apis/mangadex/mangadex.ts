@@ -20,8 +20,14 @@ export async function getMangaCover(mangaID: string) {
 
     const coverId = coverRel.id;
 
-    // fetch cover details
-    const coverRes = await fetch(`https://api.mangadex.org/cover/${coverId}`);
+
+    // for npm run dev, no serverless function available, use direct api call
+    // const coverRes = await fetch(`https://api.mangadex.org/cover/${coverId}`);
+
+    // fetch cover details from custom api route to avoid CORS issues
+    const coverRes = await fetch(`/api/mangadex/${coverId}`);
+
+
     if (!coverRes.ok) throw new Error("failed to fetch cover");
     const coverData = await coverRes.json();
 
@@ -52,5 +58,4 @@ export async function getPossibleMangaByTitle(mangaTitle: string) {
     const data = await response.json();
     console.log("Manga search results:", data);
 }
-
 
