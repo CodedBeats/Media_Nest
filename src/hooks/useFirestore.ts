@@ -1,8 +1,11 @@
 // dependencies
 import { useEffect, useState } from "react";
 // api functions
-import { fetchAllMangaItems, fetchMangaItemByID } from "../api/firebase/firestore";
-import { getMangaCover } from "../api/mangadex/mangadex";
+import {
+    fetchAllMangaItems,
+    fetchMangaItemByID,
+} from "../apis/firebase/firestore";
+import { getMangaCover } from "../apis/mangadex/mangadex";
 // utility
 import { type MangaItem, type MangaItemWithCover } from "../utility/interfaces";
 
@@ -35,7 +38,7 @@ export const useFecthAllMangaItems = () => {
             // fetch all manga from firestore
             const data = await fetchAllMangaItems();
 
-            // add cover img url to each manga item 
+            // add cover img url to each manga item
             const enrichedData = await Promise.all(
                 data.map(async (manga) => {
                     // prioirty 1 - use existing coverUrl if available
@@ -46,12 +49,14 @@ export const useFecthAllMangaItems = () => {
                     // priority 2 - fetch from mangadex if mangadexId is available
                     if (manga.mangadexID) {
                         try {
-                            const coverUrl = await getMangaCover(manga.mangadexID);
+                            const coverUrl = await getMangaCover(
+                                manga.mangadexID
+                            );
                             console.log("cover url fetched:", coverUrl);
                             return { ...manga, coverUrl };
                         } catch (err) {
                             console.error(`failed to fetch cover for manga ${manga.id}:`, err);
-                            return { ...manga, coverUrl: "/fallback-cover.png" }; // return manga without imgUrl if fetch fails
+                            return { ...manga, coverUrl: "/fallback-cover.png", }; // return manga without imgUrl if fetch fails
                         }
                     }
 
