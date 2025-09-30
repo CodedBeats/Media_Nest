@@ -1,7 +1,10 @@
-
-//! unused
 export async function getMangaDetails(mangaId: string) {
-    const res = await fetch(`https://api.mangadex.org/manga/${mangaId}`);
+    // for npm run dev, no serverless function available, use direct api call
+    // const res = await fetch(`https://api.mangadex.org/manga/${mangaId}`);
+
+    // fetch manga details from custom api route to avoid CORS issues
+    const res = await fetch(`/api/mangadex/manga/${mangaId}`);
+
     if (!res.ok) throw new Error("failed to fetch manga");
     return res.json();
 }
@@ -25,7 +28,7 @@ export async function getMangaCover(mangaID: string) {
     // const coverRes = await fetch(`https://api.mangadex.org/cover/${coverId}`);
 
     // fetch cover details from custom api route to avoid CORS issues
-    const coverRes = await fetch(`/api/mangadex/${coverId}`);
+    const coverRes = await fetch(`/api/mangadex/coverImg/${coverId}`);
 
 
     if (!coverRes.ok) throw new Error("failed to fetch cover");
