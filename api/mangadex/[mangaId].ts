@@ -7,6 +7,10 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { mangaId } = req.query;
 
+    if (!mangaId || typeof mangaId !== "string") {
+        return res.status(400).json({ error: "missing mangaID" });
+    }
+
     try {
         const response = await fetch(
             `https://api.mangadex.org/manga/${mangaId}`

@@ -1,5 +1,3 @@
-
-//! unused
 export async function getMangaDetails(mangaId: string) {
     // for npm run dev, no serverless function available, use direct api call
     // const res = await fetch(`https://api.mangadex.org/manga/${mangaId}`);
