@@ -1,7 +1,12 @@
 
 //! unused
 export async function getMangaDetails(mangaId: string) {
-    const res = await fetch(`https://api.mangadex.org/manga/${mangaId}`);
+    // for npm run dev, no serverless function available, use direct api call
+    // const res = await fetch(`https://api.mangadex.org/manga/${mangaId}`);
+
+    // fetch manga details from custom api route to avoid CORS issues
+    const res = await fetch(`/api/mangadex/${mangaId}`);
+
     if (!res.ok) throw new Error("failed to fetch manga");
     return res.json();
 }
