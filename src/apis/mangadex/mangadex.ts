@@ -37,7 +37,7 @@ export async function getMangaCover(mangaID: string) {
     const fileName = coverData.data.attributes.fileName;
 
     // return setup api url
-    return `https://uploads.mangadex.org/covers/${mangaID}/${fileName}`;
+    return `https://uploads.mangadex.org/covers/${mangaID}/${fileName}.256.jpg`;
 }
 
 

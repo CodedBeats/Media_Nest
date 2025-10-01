@@ -23,8 +23,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         const data = await response.json();
 
-        // add CORS header
+        // add proper CORS headers
         res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
         return res.status(200).json(data);
     } catch (err) {
