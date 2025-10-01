@@ -6,6 +6,8 @@ import { EditMangaForm } from "../forms/EditMediaForms";
 import { updateMangaItemByID } from "../../../apis/firebase/firestore";
 // context
 import { useAuth } from "../../../hooks/useFirebaseAuth";
+// hooks
+import { useImageLoader } from "../../../hooks/useImage";
 
 const MangaCell = ({
     id,
@@ -35,6 +37,13 @@ const MangaCell = ({
     const [originalStatus, setOriginalStatus] = useState(status ?? "Select Status");
     const [labelStatus, setLabelStatus] = useState(status ?? "Select Status");
     const [showEditMangaForm, setShowEditMangaForm] = useState(false);
+
+    // image loader
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { loaded: coverLoaded, error: coverError } = useImageLoader(coverUrl || "");
+    if (coverError || !coverUrl) {
+        return <img src="/fallback-cover.png" alt="Fallback" />;
+    }
 
     // handle status change
     const handleUpdateMangaStatus = () => {
@@ -69,6 +78,11 @@ const MangaCell = ({
                         src={coverUrl}
                         alt="manga cover"
                         className="w-full h-full object-cover"
+                        onLoad={() => console.log('Rendered image loaded:', coverUrl)}
+                        onError={(e) => {
+                            console.error('Rendered image failed:', coverUrl);
+                            e.currentTarget.src = '/fallback-cover.png';
+                        }}
                     />
                 ) : (
                     <img
