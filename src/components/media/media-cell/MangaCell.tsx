@@ -39,9 +39,9 @@ const MangaCell = ({
     const [showEditMangaForm, setShowEditMangaForm] = useState(false);
 
     // image loader
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { loaded: coverLoaded, error: coverError } = useImageLoader(coverUrl || "");
     if (coverError || !coverUrl) {
+        console.log(coverLoaded)
         return <img src="/fallback-cover.png" alt="Fallback" />;
     }
 
