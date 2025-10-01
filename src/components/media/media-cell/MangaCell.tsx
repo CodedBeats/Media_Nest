@@ -6,13 +6,11 @@ import { EditMangaForm } from "../forms/EditMediaForms";
 import { updateMangaItemByID } from "../../../apis/firebase/firestore";
 // context
 import { useAuth } from "../../../hooks/useFirebaseAuth";
-// hooks
-import { useImageLoader, useImageWithCacheBust } from "../../../hooks/useImage";
 
 const MangaCell = ({
     id,
     mangadexID,
-    coverUrl,
+    //coverUrl,
     imgUrl,
     title,
     author,
@@ -22,7 +20,7 @@ const MangaCell = ({
 }: {
     id?: string;
     mangadexID?: string;
-    coverUrl?: string;
+    //coverUrl?: string;
     imgUrl?: string;
     title?: string;
     author?: string;
@@ -37,12 +35,6 @@ const MangaCell = ({
     const [originalStatus, setOriginalStatus] = useState(status ?? "Select Status");
     const [labelStatus, setLabelStatus] = useState(status ?? "Select Status");
     const [showEditMangaForm, setShowEditMangaForm] = useState(false);
-
-    // image loader - use the actual image URL that will be displayed
-    const displayUrl = coverUrl || imgUrl || "/fallback-cover.png";
-    const { loaded: coverLoaded, error: coverError } = useImageLoader(displayUrl);
-    console.log(`Cover loaded: ${coverLoaded}, error: ${coverError} for ${title}`);
-    const actualSrc = useImageWithCacheBust(displayUrl);
 
     // handle status change
     const handleUpdateMangaStatus = () => {
@@ -66,38 +58,22 @@ const MangaCell = ({
     const handleCloseEditMangaForm = () => {
         setShowEditMangaForm(false);
     }
-
-    // determine what image to show
-    const getImageSrc = () => {
-        if (coverError || !displayUrl || displayUrl === "/fallback-cover.png") {
-            return "/fallback-cover.png";
-        }
-        return actualSrc;
-    };
+    
+    //? possibly fix the weird coverURL issue later
+    // const shitsFucked = () => {
+    //     console.log("coverUrl:", coverUrl);
+    // }
 
 
     return (
         <div className="flex items-center align-center justify-between gap-6 w-full h-full bg-[#aaa] border-1 border-solid hover:border-red-500 transition rounded-2xl">
             {/* background image */}
             <div className="w-30 h-30 flex items-center justify-center">
-                { coverUrl ? (
-                    <img
-                        src={getImageSrc()}
-                        alt="manga cover"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                            console.log('Image failed, falling back:', displayUrl);
-                            e.currentTarget.src = "/fallback-cover.png";
-                        }}
-                        onLoad={() => console.log(`✅ Image loaded: ${title}`)}
-                    />
-                ) : (
-                    <img
-                        src={imgUrl}
-                        alt="manga cover"
-                        className="w-full h-full object-cover"
-                    />
-                )}
+                <img
+                    src={imgUrl}
+                    alt="manga cover"
+                    className="w-full h-full object-cover"
+                />
             </div>
             {/* manga title, author, progress, status */}
             <div className="flex flex-col items-start justify-center w-full h-30 gap-0.5">
