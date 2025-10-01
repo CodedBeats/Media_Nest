@@ -13,7 +13,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     try {
         const response = await fetch(
-            `https://api.mangadex.org/cover/${coverId}`
+            `https://api.mangadex.org/cover/${coverId}`,
+            {
+                headers: {
+                    // Add headers that make it look like a browser request
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                    'Accept': 'application/json',
+                    'Referer': 'https://mangadex.org/'
+                }
+            }
         );
 
         console.log('MangaDex API response status:', response.status);
