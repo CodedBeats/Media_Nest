@@ -26,11 +26,10 @@ export async function getMangaCover(mangaID: string) {
         const coverData = await coverRes.json();
 
         const fileName = coverData.data.attributes.fileName;
-        const coverUrl = `https://uploads.mangadex.org/covers/${mangaID}/${fileName}.256.jpg`;
         
-        // Verify the image actually loads
-        const verifiedUrl = await verifyImageLoads(coverUrl);
-        return verifiedUrl;
+        // Return URL with cache-busting parameter
+        const timestamp = Date.now();
+        return `https://uploads.mangadex.org/covers/${mangaID}/${fileName}.256.jpg?t=${timestamp}`;
         
     } catch (error) {
         console.error('Error in getMangaCover:', error);
@@ -58,35 +57,5 @@ export async function getPossibleMangaByTitle(mangaTitle: string) {
 
     const data = await response.json();
     console.log("Manga search results:", data);
-}
-
-
-
-// ============================================================= //
-// Helper function to verify image loads
-async function verifyImageLoads(url: string, retries = 3): Promise<string> {
-    for (let i = 0; i < retries; i++) {
-        try {
-            const response = await fetch(url, { 
-                method: 'HEAD',
-                cache: i === 0 ? 'reload' : 'no-cache' // Force reload on first try
-            });
-            
-            if (response.ok) {
-                // If it's not the first try, add cache busting
-                if (i > 0) {
-                    return `${url}?retry=${i}&t=${Date.now()}`;
-                }
-                return url;
-            }
-        } catch (error) {
-            console.log(`Image verification attempt ${i + 1} failed:`, error);
-        }
-        
-        // Wait before retry
-        await new Promise(resolve => setTimeout(resolve, 1000));
-    }
-    
-    throw new Error(`Failed to load image after ${retries} attempts: ${url}`);
 }
 
