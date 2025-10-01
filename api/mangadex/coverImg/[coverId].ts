@@ -7,10 +7,18 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { coverId } = req.query;
 
+    console.log('=== SERVERLESS FUNCTION START ===');
+    console.log('Cover ID from query:', coverId);
+    console.log('Request headers:', req.headers);
+
     try {
         const response = await fetch(
             `https://api.mangadex.org/cover/${coverId}`
         );
+
+        console.log('MangaDex API response status:', response.status);
+        console.log('MangaDex API response headers:', Object.fromEntries(response.headers.entries()));
+
         if (!response.ok) {
             return res
                 .status(response.status)
@@ -18,12 +26,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         const data = await response.json();
+        console.log('MangaDex API data received, fileName:', data.data?.attributes?.fileName);
 
         // add proper CORS headers
         res.setHeader("Access-Control-Allow-Origin", "*");
         res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
         res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
+        console.log('=== SERVERLESS FUNCTION END ===');
         return res.status(200).json(data);
     } catch (err) {
         console.error(err);

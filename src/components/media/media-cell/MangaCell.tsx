@@ -78,17 +78,16 @@ const MangaCell = ({
                         src={coverUrl}
                         alt="manga cover"
                         className="w-full h-full object-cover"
-                        onLoad={() => console.log('Rendered image loaded:', coverUrl)}
-                        onError={(e) => {
-                            console.error('Rendered image failed:', coverUrl);
-                            e.currentTarget.src = '/fallback-cover.png';
-                        }}
+                        onLoad={() => console.log(`✅ Image ${id} loaded: ${title}`)}
+                        onError={() => console.log(`❌ Image ${id} failed: ${title}`)}
                     />
                 ) : (
                     <img
                         src={imgUrl}
                         alt="manga cover"
                         className="w-full h-full object-cover"
+                        onLoad={() => console.log(`✅ Image ${id} loaded: ${title}`)}
+                        onError={() => console.log(`❌ Image ${id} failed: ${title}`)}
                     />
                 )}
             </div>
