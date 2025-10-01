@@ -11,61 +11,31 @@ export async function getMangaDetails(mangaId: string) {
 
 // get manga thumbnail img url
 export async function getMangaCover(mangaID: string) {
-    // // get manga details
-    // const mangaData = await getMangaDetails(mangaID);
+    try {
+        const mangaData = await getMangaDetails(mangaID);
+        const coverRel = mangaData.data.relationships.find(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (rel: any) => rel.type === "cover_art"
+        );
+        if (!coverRel) throw new Error("no cover art found");
 
-    // // find the cover relationship
-    // const coverRel = mangaData.data.relationships.find(
-    //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //     (rel: any) => rel.type === "cover_art"
-    // );
-    // if (!coverRel) throw new Error("no cover art found");
+        const coverId = coverRel.id;
+        const coverRes = await fetch(`/api/mangadex/coverImg/${coverId}`);
+        
+        if (!coverRes.ok) throw new Error("failed to fetch cover");
+        const coverData = await coverRes.json();
 
-    // const coverId = coverRel.id;
-
-
-    // // for npm run dev, no serverless function available, use direct api call
-    // // const coverRes = await fetch(`https://api.mangadex.org/cover/${coverId}`);
-
-    // // fetch cover details from custom api route to avoid CORS issues
-    // const coverRes = await fetch(`/api/mangadex/coverImg/${coverId}`, {
-    //     headers: {
-    //         'Cache-Control': 'no-cache',
-    //         'Pragma': 'no-cache'
-    //     }
-    // });
-
-
-    // if (!coverRes.ok) throw new Error("failed to fetch cover");
-    // const coverData = await coverRes.json();
-
-    // const fileName = coverData.data.attributes.fileName;
-
-    // // return setup api url
-    // return `https://uploads.mangadex.org/covers/${mangaID}/${fileName}.256.jpg`;
-
-    // ============================================================= //
-    // get manga details
-    const mangaData = await getMangaDetails(mangaID);
-
-    // find the cover relationship
-    const coverRel = mangaData.data.relationships.find(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (rel: any) => rel.type === "cover_art"
-    );
-    if (!coverRel) throw new Error("no cover art found");
-
-    const coverId = coverRel.id;
-
-    // Use the debug function instead of direct fetch
-    const coverData = await debugCoverFetch(coverId);
-
-    const fileName = coverData.data.attributes.fileName;
-
-    // cache-busting parameter
-    const timestamp = Date.now();
-    // return setup api url
-    return `https://uploads.mangadex.org/covers/${mangaID}/${fileName}.256.jpg?t=${timestamp}`;
+        const fileName = coverData.data.attributes.fileName;
+        const coverUrl = `https://uploads.mangadex.org/covers/${mangaID}/${fileName}.256.jpg`;
+        
+        // Verify the image actually loads
+        const verifiedUrl = await verifyImageLoads(coverUrl);
+        return verifiedUrl;
+        
+    } catch (error) {
+        console.error('Error in getMangaCover:', error);
+        throw error;
+    }
 }
 
 
@@ -93,47 +63,30 @@ export async function getPossibleMangaByTitle(mangaTitle: string) {
 
 
 // ============================================================= //
-const debugCoverFetch = async (coverId: string) => {
-    console.log('=== DEBUG COVER FETCH START ===');
-    console.log('Cover ID:', coverId);
-    
-    try {
-        const coverRes = await fetch(`/api/mangadex/coverImg/${coverId}`);
-        console.log('Cover response status:', coverRes.status);
-        console.log('Cover response ok:', coverRes.ok);
-        console.log('Cover response headers:', Object.fromEntries(coverRes.headers.entries()));
-        
-        // Get the response as text first to see raw content
-        const text = await coverRes.text();
-        console.log('Cover response text length:', text.length);
-        console.log('Cover response first 500 chars:', text.substring(0, 500));
-        
-        if (!coverRes.ok) {
-            console.error('Cover fetch failed with status:', coverRes.status);
-            throw new Error("failed to fetch cover");
-        }
-
-        // Parse back to JSON
-        let coverData;
+// Helper function to verify image loads
+async function verifyImageLoads(url: string, retries = 3): Promise<string> {
+    for (let i = 0; i < retries; i++) {
         try {
-            coverData = JSON.parse(text);
-            console.log('Cover data structure:', {
-                hasData: !!coverData.data,
-                dataKeys: coverData.data ? Object.keys(coverData.data) : 'no data',
-                attributes: coverData.data?.attributes ? Object.keys(coverData.data.attributes) : 'no attributes'
+            const response = await fetch(url, { 
+                method: 'HEAD',
+                cache: i === 0 ? 'reload' : 'no-cache' // Force reload on first try
             });
-            console.log('FileName from cover data:', coverData.data?.attributes?.fileName);
-        } catch (parseError) {
-            console.error('Failed to parse JSON:', parseError);
-            console.log('Raw response that failed to parse:', text);
-            throw new Error("failed to parse cover data");
+            
+            if (response.ok) {
+                // If it's not the first try, add cache busting
+                if (i > 0) {
+                    return `${url}?retry=${i}&t=${Date.now()}`;
+                }
+                return url;
+            }
+        } catch (error) {
+            console.log(`Image verification attempt ${i + 1} failed:`, error);
         }
         
-        console.log('=== DEBUG COVER FETCH END ===');
-        return coverData;
-    } catch (error) {
-        console.error('=== DEBUG COVER FETCH ERROR ===', error);
-        throw error;
+        // Wait before retry
+        await new Promise(resolve => setTimeout(resolve, 1000));
     }
-};
+    
+    throw new Error(`Failed to load image after ${retries} attempts: ${url}`);
+}
 
