@@ -16,7 +16,7 @@ export const useImageLoader = (src: string) => {
 
         // add event listeners to the image
         img.onload = () => {
-            console.log("Image loaded successfully:", src);
+            // console.log("Image loaded successfully:", src);
             setLoaded(true);
         };
         img.onerror = () => {
