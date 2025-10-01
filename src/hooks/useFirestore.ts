@@ -1,5 +1,5 @@
 // dependencies
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // api functions
 import {
     fetchAllMangaItems,
@@ -30,9 +30,13 @@ export const useFecthAllMangaItems = () => {
     const [mangaItems, setMangaItems] = useState<MangaItemWithCover[]>([]);
     const [isLoading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
+    const fetchRef = useRef(false); 
 
 
     const fetchData = async () => {
+        if (fetchRef.current) return;
+        fetchRef.current = true;
+
         try {
             setLoading(true);
             // fetch all manga from firestore
@@ -90,6 +94,7 @@ export const useFecthAllMangaItems = () => {
     }, []);
 
     const refetch = async () => {
+        fetchRef.current = false;
         await fetchData();
     };
 
