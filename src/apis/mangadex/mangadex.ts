@@ -62,8 +62,10 @@ export async function getMangaCover(mangaID: string) {
 
     const fileName = coverData.data.attributes.fileName;
 
+    // cache-busting parameter
+    const timestamp = Date.now();
     // return setup api url
-    return `https://uploads.mangadex.org/covers/${mangaID}/${fileName}.256.jpg`;
+    return `https://uploads.mangadex.org/covers/${mangaID}/${fileName}.256.jpg?t=${timestamp}`;
 }
 
 
