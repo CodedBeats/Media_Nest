@@ -28,7 +28,12 @@ export async function getMangaCover(mangaID: string) {
     // const coverRes = await fetch(`https://api.mangadex.org/cover/${coverId}`);
 
     // fetch cover details from custom api route to avoid CORS issues
-    const coverRes = await fetch(`/api/mangadex/coverImg/${coverId}`);
+    const coverRes = await fetch(`/api/mangadex/coverImg/${coverId}`, {
+        headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+        }
+    });
 
 
     if (!coverRes.ok) throw new Error("failed to fetch cover");
