@@ -56,12 +56,6 @@ export const useFecthAllMangaItems = () => {
                             const coverUrl = await getMangaCover(manga.mangadexID);
                             console.log("cover url fetched:", coverUrl);
 
-                            // Test the image URL immediately
-                            const imgTest = new Image();
-                            imgTest.onload = () => console.log(`cover for ${manga.id} loaded successfully`);
-                            imgTest.onerror = () => console.error(`cover for ${manga.id} failed to load`);
-                            imgTest.src = coverUrl;
-
                             return { ...manga, coverUrl };
                         } catch (err) {
                             console.error(`failed to fetch cover for manga ${manga.id}:`, err);
