@@ -1,11 +1,7 @@
 // dependencies
 import { useEffect, useRef, useState } from "react";
 // api functions
-import {
-    fetchAllMangaItems,
-    fetchMangaItemByID,
-} from "../apis/firebase/firestore";
-import { getMangaCover } from "../apis/mangadex/mangadex";
+import { fetchAllMangaItems, fetchMangaItemByID } from "../apis/firebase/firestore";
 // utility
 import { type MangaItem, type MangaItemWithCover } from "../utility/interfaces";
 
@@ -53,10 +49,10 @@ export const useFecthAllMangaItems = () => {
                     // priority 2 - fetch from mangadex if mangadexId is available
                     if (manga.mangadexID) {
                         try {
-                            const coverUrl = await getMangaCover(manga.mangadexID);
-                            console.log("cover url fetched:", coverUrl);
+                            // do stuff with this later
+                            console.log("mangadexID:", manga.mangadexID);
 
-                            return { ...manga, coverUrl };
+                            return { ...manga, coverUrl: manga.imgUrl || "/fallback-cover.png" };
                         } catch (err) {
                             console.error(`failed to fetch cover for manga ${manga.id}:`, err);
                             return { ...manga, coverUrl: "/fallback-cover.png", }; // return manga without imgUrl if fetch fails
