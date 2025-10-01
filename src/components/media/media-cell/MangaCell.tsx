@@ -38,13 +38,11 @@ const MangaCell = ({
     const [labelStatus, setLabelStatus] = useState(status ?? "Select Status");
     const [showEditMangaForm, setShowEditMangaForm] = useState(false);
 
-    // image loader
-    const { loaded: coverLoaded, error: coverError } = useImageLoader(coverUrl || "");
-    const actualSrc = useImageWithCacheBust(coverUrl || "");
-    if (coverError || !coverUrl) {
-        console.log(coverLoaded)
-        return <img src="/fallback-cover.png" alt="Fallback" />;
-    }
+    // image loader - use the actual image URL that will be displayed
+    const displayUrl = coverUrl || imgUrl || "/fallback-cover.png";
+    const { loaded: coverLoaded, error: coverError } = useImageLoader(displayUrl);
+    console.log(`Cover loaded: ${coverLoaded}, error: ${coverError} for ${title}`);
+    const actualSrc = useImageWithCacheBust(displayUrl);
 
     // handle status change
     const handleUpdateMangaStatus = () => {
@@ -69,6 +67,14 @@ const MangaCell = ({
         setShowEditMangaForm(false);
     }
 
+    // determine what image to show
+    const getImageSrc = () => {
+        if (coverError || !displayUrl || displayUrl === "/fallback-cover.png") {
+            return "/fallback-cover.png";
+        }
+        return actualSrc;
+    };
+
 
     return (
         <div className="flex items-center align-center justify-between gap-6 w-full h-full bg-[#aaa] border-1 border-solid hover:border-red-500 transition rounded-2xl">
@@ -76,14 +82,14 @@ const MangaCell = ({
             <div className="w-30 h-30 flex items-center justify-center">
                 { coverUrl ? (
                     <img
-                        src={actualSrc}
+                        src={getImageSrc()}
                         alt="manga cover"
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                            console.log('Image failed, trying without cache bust:', coverUrl);
-                            // Fallback to original src without cache busting
-                            e.currentTarget.src = coverUrl;
+                            console.log('Image failed, falling back:', displayUrl);
+                            e.currentTarget.src = "/fallback-cover.png";
                         }}
+                        onLoad={() => console.log(`✅ Image loaded: ${title}`)}
                     />
                 ) : (
                     <img
