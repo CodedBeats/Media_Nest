@@ -7,7 +7,7 @@ import { updateMangaItemByID } from "../../../apis/firebase/firestore";
 // context
 import { useAuth } from "../../../hooks/useFirebaseAuth";
 // hooks
-import { useImageLoader } from "../../../hooks/useImage";
+import { useImageLoader, useImageWithCacheBust } from "../../../hooks/useImage";
 
 const MangaCell = ({
     id,
@@ -40,6 +40,7 @@ const MangaCell = ({
 
     // image loader
     const { loaded: coverLoaded, error: coverError } = useImageLoader(coverUrl || "");
+    const actualSrc = useImageWithCacheBust(coverUrl || "");
     if (coverError || !coverUrl) {
         console.log(coverLoaded)
         return <img src="/fallback-cover.png" alt="Fallback" />;
@@ -75,19 +76,20 @@ const MangaCell = ({
             <div className="w-30 h-30 flex items-center justify-center">
                 { coverUrl ? (
                     <img
-                        src={coverUrl}
+                        src={actualSrc}
                         alt="manga cover"
                         className="w-full h-full object-cover"
-                        onLoad={() => console.log(`✅ Image ${id} loaded: ${title}`)}
-                        onError={() => console.log(`❌ Image ${id} failed: ${title}`)}
+                        onError={(e) => {
+                            console.log('Image failed, trying without cache bust:', coverUrl);
+                            // Fallback to original src without cache busting
+                            e.currentTarget.src = coverUrl;
+                        }}
                     />
                 ) : (
                     <img
                         src={imgUrl}
                         alt="manga cover"
                         className="w-full h-full object-cover"
-                        onLoad={() => console.log(`✅ Image ${id} loaded: ${title}`)}
-                        onError={() => console.log(`❌ Image ${id} failed: ${title}`)}
                     />
                 )}
             </div>

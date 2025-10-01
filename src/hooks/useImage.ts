@@ -13,7 +13,7 @@ export const useImageLoader = (src: string) => {
         }
 
         const img = new Image();
-        
+
         // add event listeners to the image
         img.onload = () => {
             console.log("Image loaded successfully:", src);
@@ -32,4 +32,22 @@ export const useImageLoader = (src: string) => {
     }, [src]);
 
     return { loaded, error };
+};
+
+
+export const useImageWithCacheBust = (src: string) => {
+    const [actualSrc, setActualSrc] = useState(src);
+
+    useEffect(() => {
+        if (!src) return;
+        
+        // Add cache busting parameter
+        const cacheBustedSrc = src.includes('?') 
+            ? `${src}&refresh=${Date.now()}`
+            : `${src}?refresh=${Date.now()}`;
+            
+        setActualSrc(cacheBustedSrc);
+    }, [src]);
+
+    return actualSrc;
 };
