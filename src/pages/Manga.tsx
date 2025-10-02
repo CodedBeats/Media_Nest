@@ -112,6 +112,21 @@ const Manga = () => {
                 className="flex flex-col items-center justify-center
                 bg-[#141414] px-8 py-4 rounded w-full h-full"
             >
+                <div className="flex items-center justify-center min-w-1/2 gap-4">
+                    <Search
+                        onClick={(query) => {
+                            handleSearch(query);
+                        }}
+                    />
+                    <button 
+                        className="px-4 py-2 text-white w-1/5 rounded transition
+                        border-1 border-blue-500 border-solid hover:bg-blue-900"
+                        type="button" 
+                        onClick={handleRefresh}
+                    >
+                        Refresh List
+                    </button>
+                </div>
                 <div className="flex items-center justify-center gap-2 my-8">
                     <p className="text-white font-semibold">
                         Filter by status
@@ -138,21 +153,6 @@ const Manga = () => {
                         className="px-4 py-1 text-white rounded border-1 border-[#0CB321] border-solid hover:bg-[#0f661a] transition"
                         onClick={handleRatingFilter}>
                         {ratingFilterState}
-                    </button>
-                </div>
-                <div className="flex items-center justify-center min-w-1/2 mb-8 gap-4">
-                    <Search
-                        onClick={(query) => {
-                            handleSearch(query);
-                        }}
-                    />
-                    <button 
-                        className="px-4 py-2 text-white w-1/5 rounded transition
-                        border-1 border-blue-500 border-solid hover:bg-blue-900"
-                        type="button" 
-                        onClick={handleRefresh}
-                    >
-                        Refresh List
                     </button>
                 </div>
             </div>
