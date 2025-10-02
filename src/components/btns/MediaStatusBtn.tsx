@@ -22,9 +22,10 @@ export const MediaStatusBtn = ({
     };
 
     return (
-        <div className="relative inline-block text-left">
+        <div className="relative inline-block items-center justify-between text-left w-40">
             <button
-                className="flex items-center justify-between gap-2 px-3 py-1 bg-[#0CB321] text-white rounded hover:bg-[#1BCB31] transition"
+                className="flex items-center justify-between gap-2 px-3 py-1 text-white rounded
+                border-1 border-[#0CB321] border-solid hover:bg-[#0f661a] transition"
                 onClick={toggleDropdown}
             >
                 <p>{currentStatus}</p>

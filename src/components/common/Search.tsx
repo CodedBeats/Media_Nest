@@ -9,13 +9,16 @@ const Search = ({ onClick }: { onClick: (searchQuery: string) => void }) => {
         <div className="flex items-center justify-center gap-4 w-full">
             <input
                 type="text"
-                placeholder="Search"
-                className="w-full px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition"
+                placeholder="Input search query..."
+                className="w-full px-4 py-2 bg-[#2b2b2b] text-white rounded hover:bg-[#363636] transition
+                border-1 border-gray-600 border-solid"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
             />
             <button
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                className="px-4 py-2 text-white rounded transition
+                border-1 border-blue-500 border-solid hover:bg-blue-900"
+                type="button"
                 onClick={() => onClick(query)}
             >
                 Search
