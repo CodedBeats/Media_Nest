@@ -17,12 +17,14 @@ const Navbar = () => {
     };
 
     return (
-        <div className="flex items-center justify-between px-20 py-3 bg-gray-800 w-full">
+        <div className="fixed flex items-center justify-between px-20 py-3 
+            bg-gray-800/50 w-full backdrop-blur-md z-10"
+        >
             <NavItem to="/" label="Media Nest" />
             {user ? (
                 <button
                     onClick={handleLogout}
-                    className="text-red-400 text-lg font-semibold border-b-2 border-solid border-gray-800 transition
+                    className="text-red-400 text-lg font-semibold border-b-2 border-solid border-transparent transition
                     hover:border-white hover:text-white"
                 >
                     Logout
@@ -37,7 +39,7 @@ const Navbar = () => {
 const NavItem = ({ to, label }: { to: string; label: string }) => (
     <Link
         to={to}
-        className="text-blue-400 text-lg font-semibold border-b-2 border-solid border-gray-800 transition
+        className="text-blue-400 text-lg font-semibold border-b-2 border-solid border-transparent transition
         hover:border-white hover:text-white"
     >
         {label}
