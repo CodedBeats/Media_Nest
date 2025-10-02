@@ -66,7 +66,7 @@ const MangaCell = ({
 
 
     return (
-        <div className="flex items-center align-center justify-between gap-6 w-full h-full bg-[#aaa] border-1 border-solid hover:border-red-500 transition rounded-2xl">
+        <div className="flex items-center align-center justify-between gap-6 w-full h-full hover:bg-[#1e1e1e] transition px-12 py-5">
             {/* background image */}
             <div className="w-30 h-30 flex items-center justify-center">
                 <img
@@ -76,46 +76,48 @@ const MangaCell = ({
                 />
             </div>
             {/* manga title, author, progress, status */}
-            <div className="flex flex-col items-start justify-center w-full h-30 gap-0.5">
+            <div className="flex flex-col items-start justify-center w-full h-30 gap-4">
                 <div className="text-left flex items-center justify-start w-full gap-1">
-                    <h1 className="text-2xl font-bold text-gray-800 mb-4">
+                    <h1 className="text-2xl font-bold text-white mb-4">
                         {title} |
                     </h1>
-                    <p className="text-lg text-gray-600 mb-2">{author}</p>
+                    <p className="text-lg text-gray-400 mb-2">{author}</p>
                 </div>
-                <p className="w-full text-lg text-gray-800 mb-2">
-                    Chapter: {progress}
-                </p>
-                <div className="flex items-center justify-start gap-4 w-full">
-                    <MediaStatusBtn
-                        currentStatus={labelStatus}
-                        options={[
-                            "Reading",
-                            "Completed",
-                            "On Hold",
-                            "Dropped",
-                            "Plan to Read",
-                        ]}
-                        onSelect={(newStatus) => {
-                            if (user) {
-                                setLabelStatus(newStatus);
-                            } else return;
-                        }}
-                    />
-                    {labelStatus !== originalStatus && (
-                        <button
-                            className="px-4 py-1 bg-green-900 text-white rounded hover:bg-green-700 transition"
-                            onClick={handleUpdateMangaStatus}
-                        >
-                            Update Status
-                        </button>
-                    )}
+                <div className="flex items-center justify-start w-full gap-5">
+                    <div className="flex items-center justify-start gap-4">
+                        <MediaStatusBtn
+                            currentStatus={labelStatus}
+                            options={[
+                                "Reading",
+                                "Completed",
+                                "On Hold",
+                                "Dropped",
+                                "Plan to Read",
+                            ]}
+                            onSelect={(newStatus) => {
+                                if (user) {
+                                    setLabelStatus(newStatus);
+                                } else return;
+                            }}
+                        />
+                        {labelStatus !== originalStatus && (
+                            <button
+                                className="px-4 py-1 bg-green-900 text-white rounded hover:bg-green-700 transition"
+                                onClick={handleUpdateMangaStatus}
+                            >
+                                Update Status
+                            </button>
+                        )}
+                    </div>
+                    <p className="w-full text-lg text-gray-300 mb-2">
+                        Progress: {progress}
+                    </p>
                 </div>
             </div>
             {/* rating */}
             <div className="flex flex-col items-center justify-center h-full pr-6">
-                <p className="text-gray-600">Rating</p>
-                <p className="text-lg text-gray-800">
+                <p className="text-white">Rating</p>
+                <p className="text-lg font-bold text-[#ea8900]">
                     {typeof rating === "number" && rating > 0 ? rating : "Unrated"}
                 </p>
                 { user && (
