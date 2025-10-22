@@ -32,8 +32,8 @@ const Login = () => {
 
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">Login</h1>
+        <div className="flex flex-col items-center justify-center min-h-lvh bg-[#1a1a1a] pt-20">
+            <h1 className="text-4xl font-bold text-gray-300 pb-5">Login</h1>
             <form
                 onSubmit={handleSubmit}
                 className="flex flex-col items-center justify-center w-full max-w-sm space-y-3"
@@ -55,7 +55,7 @@ const Login = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition disabled:opacity-50"
+                    className="px-6 py-2 bg-blue-600 text-white rounded w-full hover:bg-blue-700 transition disabled:opacity-50"
                 >
                     {loading ? "Loading..." : "Login"}
                 </button>
