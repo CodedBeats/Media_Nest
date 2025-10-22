@@ -18,7 +18,7 @@ const Navbar = () => {
 
     return (
         <div className="fixed flex items-center justify-between px-20 py-3 
-            bg-gray-800/50 w-full backdrop-blur-md z-10"
+            bg-gray-800/50 w-full backdrop-blur-md z-50"
         >
             <NavItem to="/" label="Media Nest" />
             {user ? (

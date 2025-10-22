@@ -6,6 +6,7 @@ import Manga from "./pages/Manga";
 import Movies from "./pages/Movies";
 import Series from "./pages/Series";
 import Login from "./pages/Login";
+import ComingSoon from "./pages/ComingSoon";
 
 // cpmponents
 import Navbar from "./components/common/Navbar";
@@ -22,6 +23,8 @@ const App = () => {
                 <Route path="/series" element={<Series />} />
 
                 <Route path="/login" element={<Login />} />
+
+                <Route path="/coming-soon" element={<ComingSoon />} />
             </Routes>
         </Router>
     );

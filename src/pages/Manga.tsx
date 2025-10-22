@@ -132,6 +132,7 @@ const Manga = () => {
                         Filter by status
                     </p>
                     <MediaStatusBtn
+                        disabled={false}
                         currentStatus={statusFilterState}
                         options={[
                             "None",
@@ -167,7 +168,11 @@ const Manga = () => {
 
             {/* add manga form */}
             {showAddMangaForm && user && (
-                <AddMangaForm closeForm={() => setShowAddMangaForm(false)} />
+                <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 overflow-y-auto">
+                    <div className="mt-10 mb-10 w-[50%]">
+                        <AddMangaForm closeForm={() => setShowAddMangaForm(false)} />
+                    </div>
+                </div>
             )}
         </div>
     );
