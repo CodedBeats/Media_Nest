@@ -58,11 +58,6 @@ const MangaCell = ({
     const handleCloseEditMangaForm = () => {
         setShowEditMangaForm(false);
     }
-    
-    //? possibly fix the weird coverURL issue later
-    // const shitsFucked = () => {
-    //     console.log("coverUrl:", coverUrl);
-    // }
 
 
     return (
@@ -133,17 +128,21 @@ const MangaCell = ({
 
             {/* edit manga form */}
             {showEditMangaForm && user && (
-                <EditMangaForm
-                    id={id || ""}
-                    mangadexID={mangadexID || ""}
-                    title={title || ""}
-                    author={author || ""}
-                    status={labelStatus}
-                    rating={rating || 0}
-                    progress={progress || ""}
-                    imgUrl={imgUrl || ""}
-                    closeForm={handleCloseEditMangaForm}
-                />
+                <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 overflow-y-auto">
+                    <div className="mt-10 mb-10 w-[50%]">
+                        <EditMangaForm
+                            id={id || ""}
+                            mangadexID={mangadexID || ""}
+                            title={title || ""}
+                            author={author || ""}
+                            status={labelStatus}
+                            rating={rating || 0}
+                            progress={progress || ""}
+                            imgUrl={imgUrl || ""}
+                            closeForm={handleCloseEditMangaForm}
+                        />
+                    </div>
+                </div>
             )}
         </div>
     );
