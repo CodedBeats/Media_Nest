@@ -119,6 +119,7 @@ export const EditMangaForm = ({
                     Status
                 </label>
                 <MediaStatusBtn
+                    disabled={false}
                     currentStatus={statusLabelState}
                     options={[
                         "Reading",

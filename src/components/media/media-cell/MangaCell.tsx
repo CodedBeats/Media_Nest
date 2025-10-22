@@ -86,6 +86,7 @@ const MangaCell = ({
                 <div className="flex items-center justify-start w-full gap-5">
                     <div className="flex items-center justify-start gap-4">
                         <MediaStatusBtn
+                            disabled={!user}
                             currentStatus={labelStatus}
                             options={[
                                 "Reading",

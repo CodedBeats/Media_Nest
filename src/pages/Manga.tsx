@@ -132,6 +132,7 @@ const Manga = () => {
                         Filter by status
                     </p>
                     <MediaStatusBtn
+                        disabled={false}
                         currentStatus={statusFilterState}
                         options={[
                             "None",

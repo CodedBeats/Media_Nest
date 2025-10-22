@@ -112,6 +112,7 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
                     Status
                 </label>
                 <MediaStatusBtn
+                    disabled={false}
                     currentStatus={statusLabelState}
                     options={[
                         "Status: None",
