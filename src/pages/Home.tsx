@@ -23,62 +23,89 @@ const Home = () => {
                         <span className="text-[#D69500]">Media Nest</span>
                     </h1>
                     <p className="text-lg md:text-xl text-gray-300 mt-4 max-w-2xl">
-                        Tracking everything I watch, read, and love. All in one cozy nest.
+                        Tracking everything I watch, read, and love. All in one
+                        cozy nest.
                     </p>
                 </div>
 
                 {/* Media Buttons (Manual Placement Control) */}
                 <div className="absolute inset-0 z-20">
                     {/* Movies */}
-                    <Link
+                    <FancyLink 
                         to="/coming-soon"
-                        className="absolute border-4 border-transparent rounded-xl hover:bg-[#fff]/20 rotate-80 transition-all duration-300"
-                        style={{
-                            width: "230px",
-                            height: "225px",
-                            top: "19%",
-                            left: "34%",
-                        }}
+                        width= "16%"
+                        height= "23%"
+                        top= "24%"
+                        left= "32%"
+                        rotate= "80"
                     />
 
                     {/* Series */}
-                    <Link
+                    <FancyLink 
                         to="/coming-soon"
-                        className="absolute border-4 border-transparent rounded-xl hover:bg-[#fff]/20 rotate-10 transition-all duration-300"
-                        style={{
-                            width: "220px",
-                            height: "210px",
-                            top: "20%",
-                            left: "50%",
-                        }}
+                        width= "12%"
+                        height= "23%"
+                        top= "24%"
+                        left= "50%"
+                        rotate= "10"
                     />
 
                     {/* Books */}
-                    <Link
+                    <FancyLink 
                         to="/coming-soon"
-                        className="absolute border-4 border-transparent rounded-xl hover:bg-[#fff]/20 rotate-70 transition-all duration-300"
-                        style={{
-                            width: "170px",
-                            height: "220px",
-                            top: "57%",
-                            left: "35%",
-                        }}
+                        width= "11%"
+                        height= "20%"
+                        top= "56%"
+                        left= "33%"
+                        rotate= "70"
                     />
 
                     {/* Manga */}
-                    <Link
+                    <FancyLink 
                         to="/manga"
-                        className="absolute border-4 border-transparent rounded-xl hover:bg-[#fff]/20 rotate-20 transition-all duration-300"
-                        style={{
-                            width: "210px",
-                            height: "200px",
-                            top: "57%",
-                            left: "53%",
-                        }}
+                        width= "13%"
+                        height= "23%"
+                        top= "53%"
+                        left= "52%"
+                        rotate= "22"
                     />
                 </div>
             </div>
         </div>
+    );
+};
+
+
+// fancy link with cool hover
+const FancyLink = (
+    {to, width, height, top, left, rotate}: 
+    {to: string, width: string, height: string, top: string, left: string, rotate: string}
+) => {
+    return (
+        <Link
+            to={to}
+            className="absolute border-4 border-transparent rounded-full transition-all duration-300 group"
+            style={{
+                width: width,
+                height: height,
+                top: top,
+                left: left,
+                transform: `rotate(${rotate}deg)`,
+            }}
+        >
+            {/* blur edges */}
+            <span className="absolute inset-0 rounded-xl opacity-0 blur-[10px] transition-opacity duration-300 group-hover:opacity-100"
+                style={{
+                background: `radial-gradient(
+                    circle at center, 
+                    rgba(255,255,255,0.35) 0%, 
+                    rgba(255,255,255,0.15) 50%, 
+                    rgba(255,255,255,0.1) 60%, 
+                    rgba(255,255,255,0) 100%
+                )`,
+                }}
+            ></span>
+        </Link>
     );
 };
 
