@@ -61,25 +61,92 @@ const MangaCell = ({
 
 
     return (
-        <div className="flex items-center align-center justify-between gap-6 w-full h-full hover:bg-[#1e1e1e] transition px-12 py-5">
-            {/* background image */}
-            <div className="w-30 h-30 flex items-center justify-center">
+        <div
+            className="w-full bg-[#1e1e1e] rounded-lg hover:bg-[#2a2a2a] transition 
+             px-4 sm:px-8 py-5 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-2 sm:gap-6"
+        >
+            {/* MOBILE view (full image + overlay) */}
+            <div className="relative w-full h-[60vh] sm:hidden overflow-hidden rounded-lg">
                 <img
                     src={imgUrl}
-                    alt="manga cover"
-                    className="w-full h-full object-cover"
+                    alt={title}
+                    className="absolute inset-0 w-full h-full object-cover"
                 />
-            </div>
-            {/* manga title, author, progress, status */}
-            <div className="flex flex-col items-start justify-center w-full h-30 gap-4">
-                <div className="text-left flex items-center justify-start w-full gap-1">
-                    <h1 className="text-2xl font-bold text-white mb-4">
-                        {title} |
-                    </h1>
-                    <p className="text-lg text-gray-400 mb-2">{author}</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+
+                {/* overlay content */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                    <h1 className="text-2xl font-bold">{title}</h1>
+                    <p className="text-sm text-gray-300 mb-2">{author}</p>
+
+                    <div className="flex items-center gap-3">
+                        <p className="text-white text-sm">Rating:</p>
+                        <p className="text-lg font-bold text-[#ea8900]">
+                            {typeof rating === "number" && rating > 0
+                                ? rating
+                                : "Unrated"}
+                        </p>
+                    </div>
+
+                    <p className="text-gray-400 text-sm mt-2">
+                        Progress: {progress}
+                    </p>
                 </div>
-                <div className="flex items-center justify-start w-full gap-5">
-                    <div className="flex items-center justify-start gap-4">
+            </div>
+            {/* actions below img */}
+            <div className="sm:hidden flex flex-col items-center justify-center gap-3 w-[100%]">
+                <div className="w-full max-w-[400px]">
+                    <MediaStatusBtn
+                        disabled={!user}
+                        currentStatus={labelStatus}
+                        options={["Reading", "Completed", "On Hold", "Dropped", "Plan to Read"]}
+                        onSelect={(newStatus) => user && setLabelStatus(newStatus)}
+                    />
+                </div>
+
+                {labelStatus !== originalStatus && (
+                <button
+                    className="px-5 py-2 bg-green-900 text-white rounded-md hover:bg-green-700 transition text-sm w-[100%]"
+                    onClick={handleUpdateMangaStatus}
+                >
+                    Update Status
+                </button>
+                )}
+
+                {user && (
+                <button
+                    className="px-5 py-2 bg-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
+                    onClick={handleShowEditMangaForm}
+                >
+                    Edit
+                </button>
+                )}
+            </div>
+
+
+            {/* DESKTOP view */}
+            <div className="hidden sm:flex items-center sm:items-start justify-between gap-4 sm:gap-6 w-full">
+                {/* cover */}
+                <div className="w-32 h-48 md:w-22 md:h-30 flex-shrink-0">
+                    <img
+                        src={imgUrl}
+                        alt="manga cover"
+                        className="w-full h-full object-cover rounded-md"
+                    />
+                </div>
+
+                {/* info */}
+                <div className="flex flex-col w-full gap-3 text-center sm:text-left">
+                    <div className="flex flex-col sm:flex-row sm:items-end justify-start gap-1 md:gap-4">
+                        <h1 className="text-xl sm:text-2xl font-bold text-white">
+                            {title}
+                        </h1>
+                        <p className="text-sm sm:text-lg text-gray-400">
+                            {author}
+                        </p>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-center justify-start gap-3 sm:gap-6">
                         <MediaStatusBtn
                             disabled={!user}
                             currentStatus={labelStatus}
@@ -90,46 +157,50 @@ const MangaCell = ({
                                 "Dropped",
                                 "Plan to Read",
                             ]}
-                            onSelect={(newStatus) => {
-                                if (user) {
-                                    setLabelStatus(newStatus);
-                                } else return;
-                            }}
+                            onSelect={(newStatus) =>
+                                user && setLabelStatus(newStatus)
+                            }
                         />
                         {labelStatus !== originalStatus && (
                             <button
-                                className="px-4 py-1 bg-green-900 text-white rounded hover:bg-green-700 transition"
+                                className="px-3 py-1 bg-green-900 text-white rounded hover:bg-green-700 transition text-sm"
                                 onClick={handleUpdateMangaStatus}
                             >
                                 Update Status
                             </button>
                         )}
+                        <p className="text-gray-300 text-sm sm:text-base">
+                            Progress: {progress}
+                        </p>
                     </div>
-                    <p className="w-full text-lg text-gray-300 mb-2">
-                        Progress: {progress}
+
+                    <div className="align-bottom">
+                        {user && (
+                            <button
+                                className="px-8 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition text-sm"
+                                onClick={handleShowEditMangaForm}
+                            >
+                                Edit
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {/* rating */}
+                <div className="flex flex-row md:flex-col items-center justify-center gap-5 md:gap-1 sm:pr-4 h-full">
+                    <p className="text-white text-sm">Rating</p>
+                    <p className="text-lg font-bold text-[#ea8900]">
+                        {typeof rating === "number" && rating > 0
+                            ? rating
+                            : "Unrated"}
                     </p>
                 </div>
             </div>
-            {/* rating */}
-            <div className="flex flex-col items-center justify-center h-full pr-6">
-                <p className="text-white">Rating</p>
-                <p className="text-lg font-bold text-[#ea8900]">
-                    {typeof rating === "number" && rating > 0 ? rating : "Unrated"}
-                </p>
-                { user && (
-                    <button
-                        className="px-4 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition"
-                        onClick={handleShowEditMangaForm}
-                    >
-                        Edit
-                    </button>
-                )}
-            </div>
 
-            {/* edit manga form */}
+            {/* --- Edit Form --- */}
             {showEditMangaForm && user && (
-                <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 overflow-y-auto">
-                    <div className="mt-10 mb-10 w-[50%]">
+                <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 overflow-y-auto p-4">
+                    <div className="mt-10 mb-10 w-full sm:w-[80%] md:w-[50%]">
                         <EditMangaForm
                             id={id || ""}
                             mangadexID={mangadexID || ""}

@@ -27,6 +27,7 @@ const Manga = () => {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [showAddMangaForm, setShowAddMangaForm] = useState<boolean>(false);
 
+
     // derived filtered list
     const filteredMangaItems = useMemo(() => {
         let items = [...mangaItems];
@@ -85,9 +86,9 @@ const Manga = () => {
     return (
         <div className="flex flex-col items-center justify-start min-h-svh pb-20 bg-[#1a1a1a]">
             {/* background img header */}
-            <div className="overflow-hidden w-full h-[28rem] relative flex items-center justify-center">
+            <div className="overflow-hidden w-full h-[12rem] md:h-[28rem] relative flex items-center justify-center">
                 <img
-                    className="w-full h-[28rem] object-cover object-bottom"
+                    className="w-full h-full object-cover object-bottom"
                     src="https://wallpapers.com/images/hd/pink-blue-anime-city-nv4sit761ja3rnhj.jpg"
                     alt="Banner"
                 />
@@ -95,12 +96,12 @@ const Manga = () => {
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black"></div>
                 
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                    <h1 className="text-6xl font-bold text-white mb-4">
+                    <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-2 pt-12 md:pt-0">
                         Manga Tracker
                     </h1>
                     {user && (
                         <button
-                            className="px-4 py-1 bg-green-900 text-white rounded hover:bg-green-700 transition"
+                            className="px-4 py-2 bg-green-900 text-white rounded-md hover:bg-green-700 transition text-sm sm:text-base"
                             onClick={() => setShowAddMangaForm(true)}
                         >
                             Add Manga
@@ -108,58 +109,64 @@ const Manga = () => {
                     )}
                 </div>
             </div>
+
+            {/* search + filters */}
             <div 
                 className="flex flex-col items-center justify-center
-                bg-[#141414] px-8 py-4 rounded w-full h-full"
+                bg-[#141414] px-4 sm:px-8 py-6 rounded w-full gap-6"
             >
-                <div className="flex items-center justify-center min-w-1/2 gap-4">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
                     <Search
                         onClick={(query) => {
                             handleSearch(query);
                         }}
                     />
                     <button 
-                        className="px-4 py-2 text-white w-1/5 rounded transition
-                        border-1 border-blue-500 border-solid hover:bg-blue-900"
+                        className="px-4 py-2 text-white rounded border border-blue-500 hover:bg-blue-900 
+                        transition w-full sm:w-auto"
                         type="button" 
                         onClick={handleRefresh}
                     >
                         Refresh List
                     </button>
                 </div>
-                <div className="flex items-center justify-center gap-2 my-8">
-                    <p className="text-white font-semibold">
-                        Filter by status
-                    </p>
-                    <MediaStatusBtn
-                        disabled={false}
-                        currentStatus={statusFilterState}
-                        options={[
-                            "None",
-                            "Reading",
-                            "Completed",
-                            "On Hold",
-                            "Dropped",
-                            "Plan to Read",
-                        ]}
-                        onSelect={(newStatus) => {
-                            handleFilterByStatus(newStatus);
-                        }}
-                    />
 
-                    <p className="text-white font-semibold">
-                        Filter by rating
-                    </p>
-                    <button 
-                        className="px-4 py-1 text-white rounded border-1 border-[#0CB321] border-solid hover:bg-[#0f661a] transition"
-                        onClick={handleRatingFilter}>
-                        {ratingFilterState}
-                    </button>
+                <div className="flex justify-center items-center w-full h-full">
+                    <div className="flex flex-row items-center justify-center gap-8 md:gap-10 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                            <p className="text-white font-semibold text-sm sm:text-base whitespace-nowrap">
+                                Status
+                            </p>
+                            <div className="flex-1 min-w-30">
+                                <MediaStatusBtn
+                                    disabled={false}
+                                    currentStatus={statusFilterState}
+                                    options={["None", "Reading", "Completed", "On Hold", "Dropped", "Plan to Read"]}
+                                    onSelect={handleFilterByStatus}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <p className="text-white font-semibold text-sm sm:text-base whitespace-nowrap">
+                                Rating
+                            </p>
+                            <button
+                                className="flex-1 px-3 py-1 text-white min-w-0 max-w-40
+                                rounded border border-[#0CB321] hover:bg-[#0f661a] transition"
+                                onClick={handleRatingFilter}
+                            >
+                                {ratingFilterState}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div className="flex flex-col items-center justify-center w-full">
+
+            {/* manga list */}
+            <div className="flex flex-col items-center justify-center w-full mt-6 px-3 gap-4 md:gap-0">
                 {filteredMangaItems.length === 0 && (
-                    <p className="text-gray-700">No manga found.</p>
+                    <p className="text-gray-500 text-center">No manga found.</p>
                 )}
                 {filteredMangaItems.map((manga) => (
                     <MangaCell key={manga.id} {...manga} />
@@ -168,8 +175,8 @@ const Manga = () => {
 
             {/* add manga form */}
             {showAddMangaForm && user && (
-                <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 overflow-y-auto">
-                    <div className="mt-10 mb-10 w-[50%]">
+                <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 overflow-y-auto p-4">
+                    <div className="mt-10 mb-10 w-full sm:w-[80%] md:w-[50%]">
                         <AddMangaForm closeForm={() => setShowAddMangaForm(false)} />
                     </div>
                 </div>
