@@ -17,8 +17,10 @@ const Navbar = () => {
     };
 
     return (
-        <div className="fixed flex items-center justify-around sm:justify-between px-5 sm:px-5 md:px-20 py-3 
+        <div 
+            className="fixed flex items-center justify-around sm:justify-between px-5 sm:px-5 md:px-20 py-3 
             bg-gray-800/50 w-full backdrop-blur-md z-50"
+            style={{ maxWidth: `${window.innerWidth}px` }}
         >
             <NavItem to="/" label="Media Nest" />
             {user ? (
