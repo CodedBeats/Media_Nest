@@ -26,6 +26,9 @@ const Manga = () => {
     const [statusFilterState, setStatusFilterState] = useState<string>("None");
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [showAddMangaForm, setShowAddMangaForm] = useState<boolean>(false);
+    // load more
+    const [visibleCount, setVisibleCount] = useState<number>(10)
+    const LOAD_STEP = 10
 
 
     // derived filtered list
@@ -36,7 +39,7 @@ const Manga = () => {
         if (searchQuery.trim()) {
             const q = searchQuery.trim().toLowerCase();
             items = items.filter((item) =>
-            item.title.toLowerCase().includes(q)
+                item.title.toLowerCase().includes(q)
             );
         }
 
@@ -52,8 +55,18 @@ const Manga = () => {
             items.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
         }
 
+        // reset visible count
+        setVisibleCount(LOAD_STEP)
+        
         return items;
     }, [mangaItems, ratingFilterState, statusFilterState, searchQuery]);
+
+
+    // handle load more
+    const handleLoadMore = () => {
+        setVisibleCount((prev) => prev + LOAD_STEP)
+    }
+    const visibleManga = filteredMangaItems.slice(0, visibleCount)
 
 
     // handle refresh manga list
@@ -115,6 +128,7 @@ const Manga = () => {
                 className="flex flex-col items-center justify-center
                 bg-[#141414] px-4 sm:px-8 py-6 rounded w-full gap-6"
             >
+                {/* search */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
                     <Search
                         onClick={(query) => {
@@ -131,6 +145,7 @@ const Manga = () => {
                     </button>
                 </div>
 
+                {/* filter */}
                 <div className="flex justify-center items-center w-full h-full">
                     <div className="flex flex-row items-center justify-center gap-8 md:gap-10 text-center">
                         <div className="flex items-center justify-center gap-2">
@@ -168,9 +183,17 @@ const Manga = () => {
                 {filteredMangaItems.length === 0 && (
                     <p className="text-gray-500 text-center">No manga found.</p>
                 )}
-                {filteredMangaItems.map((manga) => (
+                {visibleManga.map((manga) => (
                     <MangaCell key={manga.id} {...manga} />
                 ))}
+                { visibleCount < filteredMangaItems.length && (
+                    <button
+                        onClick={handleLoadMore}
+                        className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                    >
+                        Load More
+                    </button>
+                )}
             </div>
 
             {/* add manga form */}
