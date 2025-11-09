@@ -1,8 +1,23 @@
 // dependencies
+import { useState } from "react";
 
+// components
 import Search from "../components/common/Search";
+import { AddSeriesForm } from "../components/media/forms/AddMediaForms"
+
+// hooks
+import { useAuth } from "../hooks/useFirebaseAuth";
+
 
 const Series = () => {
+    // context
+    const { user } = useAuth();
+
+    // state
+    // const [searchQuery, setSearchQuery] = useState<string>("");
+    const [showAddSeriesForm, setShowAddSeriesForm] = useState<boolean>(false);
+
+
     return (
         <div className="flex flex-col items-center justify-start min-h-svh pb-20 bg-[#1a1a1a]">
             {/* background img header */}
@@ -19,14 +34,14 @@ const Series = () => {
                     <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-2 pt-12 md:pt-0">
                         Series Tracker
                     </h1>
-                    {/* {user && (
+                    {user && (
                         <button
                             className="px-4 py-2 bg-green-900 text-white rounded-md hover:bg-green-700 transition text-sm sm:text-base"
-                            onClick={() => setShowAddMangaForm(true)}
+                            onClick={() => setShowAddSeriesForm(true)}
                         >
-                            Add Manga
+                            Add TV Show
                         </button>
-                    )} */}
+                    )}
                 </div>
             </div>
 
@@ -38,7 +53,7 @@ const Series = () => {
                 {/* search */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
                     <Search
-                        onClick={(query) => {
+                        onClick={() => {
                             // handleSearch(query)
                             console.log("implement search dumbass")
                         }}
@@ -108,16 +123,17 @@ const Series = () => {
                 series here
             </div>
 
-            {/* add manga form */}
-            {/* {showAddMangaForm && user && (
+            {/* add series form */}
+            {showAddSeriesForm && user && (
                 <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 overflow-y-auto p-4">
                     <div className="mt-10 mb-10 w-full sm:w-[80%] md:w-[50%]">
-                        <AddMangaForm closeForm={() => setShowAddMangaForm(false)} />
+                        <AddSeriesForm closeForm={() => setShowAddSeriesForm(false)} />
                     </div>
                 </div>
-            )} */}
+            )}
         </div>
     );
 };
 
 export default Series;
+
