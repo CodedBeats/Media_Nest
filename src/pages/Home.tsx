@@ -110,7 +110,7 @@ const DesktopHomeLinks = () => {
 
         {/* Series */}
         <FancyLink 
-            to="/coming-soon"
+            to="/series"
             width= "12%"
             height= "20%"
             top= "26%"
@@ -157,7 +157,7 @@ const MobileHomeLinks = () => {
 
         {/* Series */}
         <FancyLink 
-            to="/coming-soon"
+            to="/series"
             width= "30%"
             height= "20%"
             top= "26%"
