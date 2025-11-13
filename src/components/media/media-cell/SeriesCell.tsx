@@ -1,11 +1,12 @@
 // components
 import { useState } from "react";
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
-// import { EditSeriesForm } from "../forms/EditMediaForms";
+import { EditSeriesForm } from "../forms/EditMediaForms";
 // api
 import { updateSeriesItemByID } from "../../../apis/firebase/firestore";
 // context
 import { useAuth } from "../../../hooks/useFirebaseAuth";
+
 
 const SeriesCell = ({
     id,
@@ -36,7 +37,7 @@ const SeriesCell = ({
     // state
     const [originalStatus, setOriginalStatus] = useState(status ?? "Select Status");
     const [labelStatus, setLabelStatus] = useState(status ?? "Select Status");
-    // const [showEditSeriesForm, setShowEditSeriesForm] = useState(false);
+    const [showEditSeriesForm, setShowEditSeriesForm] = useState(false);
 
     // handle status change
     const handleUpdateSeriesStatus = () => {
@@ -54,12 +55,12 @@ const SeriesCell = ({
     };
 
     // show and hide edit series form
-    // const handleShowEditSeriesForm = () => {
-    //     setShowEditSeriesForm(true);
-    // };
-    // const handleCloseEditSeriesForm = () => {
-    //     setShowEditSeriesForm(false);
-    // }
+    const handleShowEditSeriesForm = () => {
+        setShowEditSeriesForm(true);
+    };
+    const handleCloseEditSeriesForm = () => {
+        setShowEditSeriesForm(false);
+    }
 
 
     return (
@@ -176,7 +177,7 @@ const SeriesCell = ({
                         {user && (
                             <button
                                 className="px-8 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition text-sm"
-                                onClick={() => console.log("handleShowEditSeriesForm")}
+                                onClick={handleShowEditSeriesForm}
                             >
                                 Edit
                             </button>
@@ -196,22 +197,23 @@ const SeriesCell = ({
             </div>
 
             {/* --- Edit Form --- */}
-            {/* {showEditSeriesForm && user && (
+            {showEditSeriesForm && user && (
                 <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 overflow-y-auto p-4">
                     <div className="mt-10 mb-10 w-full sm:w-[80%] md:w-[50%]">
                         <EditSeriesForm
-                            id={id || ""}
-                            title={title || ""}
-                            author={author || ""}
-                            status={labelStatus}
-                            rating={rating || 0}
-                            progress={progress || ""}
-                            imgUrl={imgUrl || ""}
+                            id = {id || ""}
+                            tvMazeID = {tvMazeID || 0}
+                            title = {title || ""}
+                            imgUrl = {imgUrl || ""}
+                            seriesEpisodeDetails = {seriesEpisodeDetails || ""}
+                            status = {status || ""}
+                            progress = {progress || ""}
+                            rating = {rating || 0}
                             closeForm={handleCloseEditSeriesForm}
                         />
                     </div>
                 </div>
-            )} */}
+            )}
         </div>
     );
 };
