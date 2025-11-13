@@ -58,6 +58,18 @@ export const fetchAllMangaItems = async (): Promise<MangaItem[]> => {
 };
 
 
+// fetch all series items
+export const fetchAllSeriesItems = async (): Promise<SeriesItem[]> => {
+    const querySnapshot = await getDocs(collection(db, seriesCollection));
+    const seriesItems: SeriesItem[] = [];
+    querySnapshot.forEach((doc) => {
+        seriesItems.push({ id: doc.id, ...doc.data() } as SeriesItem);
+    });
+    return seriesItems;
+};
+
+
+
 // === UPDATE === //
 // update manga item by id
 export const updateMangaItemByID = async (mangaID: string, updateMangaData: object): Promise<void> => {
@@ -65,6 +77,18 @@ export const updateMangaItemByID = async (mangaID: string, updateMangaData: obje
     const docRef = doc(db, mangaCollection, mangaID);
     try {
         await updateDoc(docRef, updateMangaData);
+    } catch (e) {
+        console.error("error updating document: ", e);
+        throw e;
+    }
+}
+
+
+// update seriesItem by id
+export const updateSeriesItemByID = async (seriesID: string, updateSeriesData: object): Promise<void> => {
+    const docRef = doc(db, seriesCollection, seriesID);
+    try {
+        await updateDoc(docRef, updateSeriesData);
     } catch (e) {
         console.error("error updating document: ", e);
         throw e;
