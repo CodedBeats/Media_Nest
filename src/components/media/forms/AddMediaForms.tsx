@@ -250,7 +250,7 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
         // create series item
         try {
             await createSeriesItem(newSeriesItem)
-            console.log("Manga added successfully")
+            console.log("Series added successfully")
 
             // reset season and episode and title
             setSeasonProgress("")
@@ -268,7 +268,7 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
             });
             setStatusLabelState("Status: None")
         } catch (error) {
-            console.error("Failed to add manga:", error)
+            console.error("Failed to add Series:", error)
         }
     }
 
