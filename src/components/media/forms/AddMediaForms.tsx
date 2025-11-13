@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 
 // api
-import { createMangaItem } from "../../../apis/firebase/firestore";
+import { createMangaItem, createSeriesItem } from "../../../apis/firebase/firestore";
 
 // utility
 import { type MangaItem, type SeriesItem } from "../../../utility/interfaces";
@@ -189,17 +189,17 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
     const [episodeTitle, setEpisodeTitle] = useState<string>("")
 
 
-    // idk
+    // get all seasons
     const seasonOptions = Array.from( 
         new Set(formData.seriesEpisodeDetails.map(ep => ep.seasonNum)) 
     ).map(num => `S${num}`);
-
+    // get episode options based on season
     const filteredEpisodes = formData.seriesEpisodeDetails.filter(
         ep => ep.seasonNum === Number(seasonProgress.replace("S", ""))
     );
     const episodeOptions = filteredEpisodes.map(ep => `EP${ep.episodeNum}`);
 
-
+    // find and set episode title on episode selection
     useEffect(() => {
         if (!seasonProgress || !episodeProgress) return;
 
@@ -210,7 +210,7 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
             ep => ep.seasonNum === selectedSeason && ep.episodeNum === selectedEpisode
         );
 
-        if (match) setEpisodeTitle(match.episodeName);
+        if (match) setEpisodeTitle(match.episodeName)
     }, [seasonProgress, episodeProgress, formData.seriesEpisodeDetails]);
 
 
@@ -228,7 +228,7 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
     }
 
     // handle create manga item
-    const handleCreateMangaItem = () => {
+    const handleCreateMangaItem = async () => {
         // validate form data
         if (
             !checkEmptyInput(formData.title) ||
@@ -241,39 +241,36 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
 
         // concat season, episode and title together
         const concatProgress = `${seasonProgress} ${episodeProgress} ${episodeTitle}`
-        setFormData({
+        const newSeriesItem = {
             ...formData,
             progress: concatProgress
-        })
+        };
 
 
-        // create manga item
-        console.log(concatProgress)
-        // createMangaItem(formData)
-        //     .then(() => {
-        //         console.log("manga added successfully");
-        //     })
-        //     .catch((error) => {
-        //         console.error("Failed to add manga:", error);
-        //     });
+        // create series item
+        try {
+            await createSeriesItem(newSeriesItem)
+            console.log("Manga added successfully")
 
-
-        // reset season and episode and title
-        setSeasonProgress("")
-        setEpisodeProgress("")
-        setEpisodeTitle("")
-        // reset form data
-        setFormData({
-            tvMazeID: 0,
-            title: "",
-            status: "Status: None",
-            rating: 0,
-            progress: "",
-            imgUrl: "",
-            seriesEpisodeDetails: [],
-        });
-        setStatusLabelState("Status: None");
-    };
+            // reset season and episode and title
+            setSeasonProgress("")
+            setEpisodeProgress("")
+            setEpisodeTitle("")
+            // reset form data
+            setFormData({
+                tvMazeID: 0,
+                title: "",
+                status: "none",
+                rating: 0,
+                progress: "",
+                imgUrl: "",
+                seriesEpisodeDetails: [],
+            });
+            setStatusLabelState("Status: None")
+        } catch (error) {
+            console.error("Failed to add manga:", error)
+        }
+    }
 
     return (
         <div className="bg-[#1f1f1f] rounded-2xl shadow-xl p-6 sm:p-10 w-full flex flex-col gap-6 text-white">
@@ -301,7 +298,7 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
                 />
                 {/* search for tv show */}
                 <button 
-                    className="flex items-center justify-between w-full px-3 py-1 text-sm text-white text-center rounded border border-[#0CB321] 
+                    className="flex items-center justify-between w-full px-3 py-1 text-sm text-white rounded border border-[#0CB321] 
                     hover:bg-[#0f661a] transition"
                     onClick={grabSeries}
                 >
@@ -365,11 +362,11 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
                         currentStatus={statusLabelState}
                         options={[
                             "Status: None",
-                            "Reading",
+                            "Watching",
                             "Completed",
                             "On Hold",
                             "Dropped",
-                            "Plan to Read",
+                            "Plan to Watch",
                         ]}
                         onSelect={(newStatus) => handleSetStatus(newStatus)}
                     />
