@@ -30,9 +30,6 @@ const SeriesCell = ({
     progress: string;
     rating: number;
 }) => {
-    //! temp for vercel prod
-    console.log("just cause i can't have nice things", `tvMazeID: ${tvMazeID}, seriesEpisodeDetails: ${seriesEpisodeDetails}`)
-
     // context
     const { user } = useAuth();
 
@@ -74,7 +71,7 @@ const SeriesCell = ({
             <div className="relative w-full h-[60vh] sm:hidden overflow-hidden rounded-lg">
                 <img
                     src={imgUrl}
-                    alt={title}
+                    alt={`${tvMazeID}-${seriesEpisodeDetails.length}`}
                     className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
@@ -134,7 +131,7 @@ const SeriesCell = ({
                 <div className="w-32 h-48 md:w-22 md:h-30 flex-shrink-0">
                     <img
                         src={imgUrl}
-                        alt="series cover"
+                        alt={`${tvMazeID}-${seriesEpisodeDetails.length}`}
                         className="w-full h-full object-cover rounded-md"
                     />
                 </div>
