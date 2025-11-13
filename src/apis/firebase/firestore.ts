@@ -2,9 +2,12 @@
 import { db } from "./firebaseConfig";
 // dependencies
 import { addDoc, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
-import { type MangaItem } from "../../utility/interfaces";
 
-const mangaCollection = "manga";
+// utility
+import { type MangaItem, type SeriesItem } from "../../utility/interfaces";
+
+const mangaCollection = "manga"
+const seriesCollection = "series"
 
 
 // === CREATE === //
@@ -17,6 +20,16 @@ export const createMangaItem = async (mangaItem: MangaItem): Promise<void> => {
         throw e;
     }
 };
+
+// create tv show item
+export const createSeriesItem = async (seriesItem: SeriesItem): Promise<void> => {
+    try {
+        await addDoc(collection(db, seriesCollection), seriesItem);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+        throw e;
+    }
+}
 
 
 // === READ === //
