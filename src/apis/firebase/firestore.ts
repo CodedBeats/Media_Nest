@@ -58,6 +58,18 @@ export const fetchAllMangaItems = async (): Promise<MangaItem[]> => {
 };
 
 
+// fetch all series items
+export const fetchAllSeriesItems = async (): Promise<SeriesItem[]> => {
+    const querySnapshot = await getDocs(collection(db, seriesCollection));
+    const seriesItems: SeriesItem[] = [];
+    querySnapshot.forEach((doc) => {
+        seriesItems.push({ id: doc.id, ...doc.data() } as SeriesItem);
+    });
+    return seriesItems;
+};
+
+
+
 // === UPDATE === //
 // update manga item by id
 export const updateMangaItemByID = async (mangaID: string, updateMangaData: object): Promise<void> => {
