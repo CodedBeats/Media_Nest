@@ -84,6 +84,18 @@ export const updateMangaItemByID = async (mangaID: string, updateMangaData: obje
 }
 
 
+// update seriesItem by id
+export const updateSeriesItemByID = async (seriesID: string, updateSeriesData: object): Promise<void> => {
+    const docRef = doc(db, seriesCollection, seriesID);
+    try {
+        await updateDoc(docRef, updateSeriesData);
+    } catch (e) {
+        console.error("error updating document: ", e);
+        throw e;
+    }
+}
+
+
 // === DELETE === //
 
 
