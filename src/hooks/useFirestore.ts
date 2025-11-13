@@ -1,9 +1,9 @@
 // dependencies
 import { useEffect, useRef, useState } from "react";
 // api functions
-import { fetchAllMangaItems, fetchMangaItemByID } from "../apis/firebase/firestore";
+import { fetchAllMangaItems, fetchAllSeriesItems, fetchMangaItemByID } from "../apis/firebase/firestore";
 // utility
-import { type MangaItem, type MangaItemWithCover } from "../utility/interfaces";
+import { type MangaItem, type MangaItemWithCover, type SeriesItem } from "../utility/interfaces";
 
 // custom hook to fetch manga item by id
 export const useFecthMangaItem = (id: string) => {
@@ -90,3 +90,48 @@ export const useFecthAllMangaItems = () => {
 
     return {mangaItems, isLoading, error, refetch};
 };
+
+
+
+
+// custom hook to fetch all series items
+export const useFetchAllSeriesItems = () => {
+    // state
+    const [seriesItems, setSeriesItems] = useState<SeriesItem[]>([]);
+    const [isLoading, setLoading] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
+    const fetchRef = useRef(false); 
+
+
+    const fetchData = async () => {
+        try {
+            setLoading(true)
+
+            const data = await fetchAllSeriesItems();
+            setSeriesItems(data);
+
+        } catch (err: string | unknown) {
+            console.error(err);
+            if (err instanceof Error) {
+                setError(err);
+            } else {
+                setError(new Error(String(err)));
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const refetch = async () => {
+        fetchRef.current = false;
+        await fetchData();
+    };
+
+    return {seriesItems, isLoading, error, refetch};
+
+}
