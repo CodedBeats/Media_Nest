@@ -21,7 +21,6 @@ const Manga = () => {
     // state
     // fetch manga from firebase with custom hook
     const { mangaItems, isLoading, error, refetch } = useFecthAllMangaItems();
-    // const [filteredMangaItems, setFilteredMangaItems] = useState<MangaItem[]>(mangaSeedData);
     const [ratingFilterState, setRatingFilterState] = useState<"Asc" | "Dsc">("Dsc");
     const [statusFilterState, setStatusFilterState] = useState<string>("None");
     const [searchQuery, setSearchQuery] = useState<string>("");

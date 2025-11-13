@@ -1,9 +1,9 @@
 // components
 import { useState } from "react";
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
-import { EditMangaForm } from "../forms/EditMediaForms";
+// import { EditSeriesForm } from "../forms/EditMediaForms";
 // api
-import { updateMangaItemByID } from "../../../apis/firebase/firestore";
+import { updateSeriesItemByID } from "../../../apis/firebase/firestore";
 // context
 import { useAuth } from "../../../hooks/useFirebaseAuth";
 
@@ -30,6 +30,9 @@ const SeriesCell = ({
     progress: string;
     rating: number;
 }) => {
+    //! temp for vercel prod
+    console.log("just cause i can't have nice things", `tvMazeID: ${tvMazeID}, seriesEpisodeDetails: ${seriesEpisodeDetails}`)
+
     // context
     const { user } = useAuth();
 
@@ -39,25 +42,25 @@ const SeriesCell = ({
     // const [showEditSeriesForm, setShowEditSeriesForm] = useState(false);
 
     // handle status change
-    // const handleUpdateSeriesStatus = () => {
-    //     if (labelStatus == originalStatus) return;
+    const handleUpdateSeriesStatus = () => {
+        if (labelStatus == originalStatus) return;
 
-    //     // update series status with firebase api call
-    //     updateSeriesItemByID(id || "", { status: labelStatus })
-    //         .then(() => {
-    //             console.log("Series status updated successfully");
-    //             setOriginalStatus(labelStatus); // update original status to new status
-    //         })
-    //         .catch((error) => {
-    //             console.error("Error updating series status: ", error);
-    //         });
-    // };
+        // update series status with firebase api call
+        updateSeriesItemByID(id || "", { status: labelStatus })
+            .then(() => {
+                console.log("Series status updated successfully");
+                setOriginalStatus(labelStatus); // update original status to new status
+            })
+            .catch((error) => {
+                console.error("Error updating series status: ", error);
+            });
+    };
 
     // show and hide edit series form
-    // const handleShowEditMangaForm = () => {
+    // const handleShowEditSeriesForm = () => {
     //     setShowEditSeriesForm(true);
     // };
-    // const handleCloseEditMangaForm = () => {
+    // const handleCloseEditSeriesForm = () => {
     //     setShowEditSeriesForm(false);
     // }
 
@@ -108,7 +111,7 @@ const SeriesCell = ({
                 {labelStatus !== originalStatus && (
                 <button
                     className="px-5 py-2 bg-green-900 text-white rounded-md hover:bg-green-700 transition text-sm w-[100%]"
-                    onClick={() => console.log("handleUpdateMangaStatus")}
+                    onClick={handleUpdateSeriesStatus}
                 >
                     Update Status
                 </button>
@@ -117,7 +120,7 @@ const SeriesCell = ({
                 {user && (
                 <button
                     className="px-5 py-2 bg-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
-                    onClick={() => console.log("handleShowEditMangaForm")}
+                    onClick={() => console.log("handleShowEditSeriesForm")}
                 >
                     Edit
                 </button>
@@ -131,7 +134,7 @@ const SeriesCell = ({
                 <div className="w-32 h-48 md:w-22 md:h-30 flex-shrink-0">
                     <img
                         src={imgUrl}
-                        alt="manga cover"
+                        alt="series cover"
                         className="w-full h-full object-cover rounded-md"
                     />
                 </div>
@@ -162,7 +165,7 @@ const SeriesCell = ({
                         {labelStatus !== originalStatus && (
                             <button
                                 className="px-3 py-1 bg-green-900 text-white rounded hover:bg-green-700 transition text-sm"
-                                onClick={() => console.log("handleUpdateMangaStatus")}
+                                onClick={handleUpdateSeriesStatus}
                             >
                                 Update Status
                             </button>
@@ -176,7 +179,7 @@ const SeriesCell = ({
                         {user && (
                             <button
                                 className="px-8 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition text-sm"
-                                onClick={() => console.log("handleShowEditMangaForm")}
+                                onClick={() => console.log("handleShowEditSeriesForm")}
                             >
                                 Edit
                             </button>
@@ -196,19 +199,18 @@ const SeriesCell = ({
             </div>
 
             {/* --- Edit Form --- */}
-            {/* {showEditMangaForm && user && (
+            {/* {showEditSeriesForm && user && (
                 <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 overflow-y-auto p-4">
                     <div className="mt-10 mb-10 w-full sm:w-[80%] md:w-[50%]">
-                        <EditMangaForm
+                        <EditSeriesForm
                             id={id || ""}
-                            mangadexID={mangadexID || ""}
                             title={title || ""}
                             author={author || ""}
                             status={labelStatus}
                             rating={rating || 0}
                             progress={progress || ""}
                             imgUrl={imgUrl || ""}
-                            closeForm={handleCloseEditMangaForm}
+                            closeForm={handleCloseEditSeriesForm}
                         />
                     </div>
                 </div>

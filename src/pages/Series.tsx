@@ -1,10 +1,11 @@
 // dependencies
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 // components
 import Search from "../components/common/Search";
 import { AddSeriesForm } from "../components/media/forms/AddMediaForms"
 import SeriesCell from "../components/media/media-cell/SeriesCell";
+import { MediaStatusBtn } from "../components/btns/MediaStatusBtn";
 
 // hooks
 import { useAuth } from "../hooks/useFirebaseAuth";
@@ -18,8 +19,79 @@ const Series = () => {
     const { seriesItems, isLoading, error, refetch } = useFetchAllSeriesItems();
 
     // state
-    // const [searchQuery, setSearchQuery] = useState<string>("");
     const [showAddSeriesForm, setShowAddSeriesForm] = useState<boolean>(false);
+    const [ratingFilterState, setRatingFilterState] = useState<"Asc" | "Dsc">("Dsc");
+    const [statusFilterState, setStatusFilterState] = useState<string>("None");
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    // load more
+    const [visibleCount, setVisibleCount] = useState<number>(10)
+    const LOAD_STEP = 10
+
+
+    // derived filtered list
+    const filteredSeriesItems = useMemo(() => {
+        let items = [...seriesItems];
+
+        // apply search filter
+        if (searchQuery.trim()) {
+            const q = searchQuery.trim().toLowerCase();
+            items = items.filter((item) =>
+                item.title.toLowerCase().includes(q)
+            );
+        }
+
+        // apply status filter
+        if (statusFilterState !== "None") {
+            items = items.filter((item) => item.status === statusFilterState);
+        }
+
+        // apply rating sort
+        if (ratingFilterState === "Asc") {
+            items.sort((a, b) => (a.rating ?? 0) - (b.rating ?? 0));
+        } else {
+            items.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+        }
+
+        // reset visible count
+        setVisibleCount(LOAD_STEP)
+        
+        return items;
+    }, [seriesItems, ratingFilterState, statusFilterState, searchQuery]);
+
+
+    // handle load more
+    const handleLoadMore = () => {
+        setVisibleCount((prev) => prev + LOAD_STEP)
+    }
+    const visibleSeries = filteredSeriesItems.slice(0, visibleCount)
+
+
+    // handle refresh manga list
+    const handleRefresh = async () => {
+        await refetch();
+        setStatusFilterState("None");
+        setRatingFilterState("Dsc");
+        setSearchQuery("");
+    };
+
+    // handle sort by rating
+    const handleRatingFilter = () => {
+        setRatingFilterState((prev) => (prev === "Dsc" ? "Asc" : "Dsc"));
+    };
+
+    // handle sort by status
+    const handleFilterByStatus = (status: string) => {
+        setStatusFilterState(status);
+    };
+
+    // handle search
+    const handleSearch = (query: string) => {
+        setSearchQuery(query);
+    };
+
+
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
 
 
     return (
@@ -57,17 +129,15 @@ const Series = () => {
                 {/* search */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
                     <Search
-                        onClick={() => {
-                            // handleSearch(query)
-                            console.log("implement search dumbass")
+                        onClick={(query) => {
+                            handleSearch(query)
                         }}
                     />
                     <button 
                         className="px-4 py-2 text-white rounded border border-blue-500 hover:bg-blue-900 
                         transition w-full sm:w-auto"
                         type="button" 
-                        // onClick={handleRefresh}
-                        onClick={() => console.log("implement refresh dumbass")}
+                        onClick={handleRefresh}
                     >
                         Refresh List
                     </button>
@@ -81,13 +151,12 @@ const Series = () => {
                                 Status
                             </p>
                             <div className="flex-1 min-w-30">
-                                {/* <MediaStatusBtn
+                                <MediaStatusBtn
                                     disabled={false}
                                     currentStatus={statusFilterState}
-                                    options={["None", "Reading", "Completed", "On Hold", "Dropped", "Plan to Read"]}
+                                    options={["None", "Watching", "Completed", "On Hold", "Dropped", "Plan to Watch"]}
                                     onSelect={handleFilterByStatus}
-                                /> */}
-                                <p className="text-gray-500">media status btn here</p>
+                                />
                             </div>
                         </div>
 
@@ -98,10 +167,9 @@ const Series = () => {
                             <button
                                 className="flex-1 px-3 py-1 text-white min-w-0 max-w-40
                                 rounded border border-[#0CB321] hover:bg-[#0f661a] transition"
-                                onClick={() => console.log("implement handleRatingFilter dumbass")}
+                                onClick={handleRatingFilter}
                             >
-                                {/* {ratingFilterState} */}
-                                ratingFilterState here
+                                {ratingFilterState}
                             </button>
                         </div>
                     </div>
@@ -110,20 +178,20 @@ const Series = () => {
 
             {/* manga list */}
             <div className="flex flex-col items-center justify-center w-full mt-6 px-3 gap-4 md:gap-0">
-                {/* {filteredMangaItems.length === 0 && (
+                {filteredSeriesItems.length === 0 && (
                     <p className="text-gray-500 text-center">No manga found.</p>
                 )}
-                {visibleManga.map((manga) => (
-                    <MangaCell key={manga.id} {...manga} />
+                {visibleSeries.map((series) => (
+                    <SeriesCell key={series.id} {...series} />
                 ))}
-                { visibleCount < filteredMangaItems.length && (
+                { visibleCount < filteredSeriesItems.length && (
                     <button
                         onClick={handleLoadMore}
                         className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
                     >
                         Load More
                     </button>
-                )} */}
+                )}
             </div>
 
             {/* add series form */}
