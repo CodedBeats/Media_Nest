@@ -1,5 +1,5 @@
 // dependencies
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // components
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
@@ -10,6 +10,9 @@ import { createMangaItem } from "../../../apis/firebase/firestore";
 // utility
 import { type MangaItem, type SeriesItem } from "../../../utility/interfaces";
 import { checkEmptyInput } from "../../../utility/manipulateStr";
+import { fetchShowData } from "../../../utility/fetchHelpers";
+
+
 
 // add manga form
 export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
@@ -186,20 +189,53 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
     const [episodeTitle, setEpisodeTitle] = useState<string>("")
 
 
+    // idk
+    const seasonOptions = Array.from( 
+        new Set(formData.seriesEpisodeDetails.map(ep => ep.seasonNum)) 
+    ).map(num => `S${num}`);
+
+    const filteredEpisodes = formData.seriesEpisodeDetails.filter(
+        ep => ep.seasonNum === Number(seasonProgress.replace("S", ""))
+    );
+    const episodeOptions = filteredEpisodes.map(ep => `EP${ep.episodeNum}`);
+
+
+    useEffect(() => {
+        if (!seasonProgress || !episodeProgress) return;
+
+        const selectedSeason = Number(seasonProgress.replace("S", ""));
+        const selectedEpisode = Number(episodeProgress.replace("EP", ""));
+
+        const match = formData.seriesEpisodeDetails.find(
+            ep => ep.seasonNum === selectedSeason && ep.episodeNum === selectedEpisode
+        );
+
+        if (match) setEpisodeTitle(match.episodeName);
+    }, [seasonProgress, episodeProgress, formData.seriesEpisodeDetails]);
+
+
+
     // handle set status
     const handleSetStatus = (status: string) => {
         setStatusLabelState(status);
         setFormData({ ...formData, status: status });
     };
 
+    // use tv maze api to get data on show
+    const grabSeries = async () => {
+        const show = await fetchShowData(formData.title);
+        if (show) setFormData(show);
+    }
+
     // handle create manga item
     const handleCreateMangaItem = () => {
         // validate form data
         if (
             !checkEmptyInput(formData.title) ||
-            !checkEmptyInput(formData.imgUrl)
+            !checkEmptyInput(formData.imgUrl) || 
+            formData.tvMazeID == 0
         ) {
-            alert("Required fields: Title, Image URL");
+            alert("Required fields: Title, Image URL, tvMazeID");
             return;
         }
 
@@ -228,6 +264,7 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
         setEpisodeTitle("")
         // reset form data
         setFormData({
+            tvMazeID: 0,
             title: "",
             status: "Status: None",
             rating: 0,
@@ -254,15 +291,6 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
             {/* form fields */}
             <div className="flex flex-col gap-4">
                 <CustomInput
-                    label="Cover Image"
-                    inputType="text"
-                    placeholder="Image URL"
-                    value={formData.imgUrl || ""}
-                    onChange={(e) => {
-                        setFormData({ ...formData, imgUrl: e.target.value });
-                    }}
-                />
-                <CustomInput
                     label="Title"
                     inputType="text"
                     placeholder="Manga Title"
@@ -271,48 +299,66 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
                         setFormData({ ...formData, title: e.target.value });
                     }}
                 />
+                {/* search for tv show */}
+                <button 
+                    className="flex items-center justify-between w-full px-3 py-1 text-sm text-white text-center rounded border border-[#0CB321] 
+                    hover:bg-[#0f661a] transition"
+                    onClick={grabSeries}
+                >
+                    GRABBIT
+                </button>
+
+                <CustomInput
+                    label="Cover Image"
+                    inputType="text"
+                    placeholder="Image URL"
+                    value={formData.imgUrl || ""}
+                    onChange={(e) => {
+                        setFormData({ ...formData, imgUrl: e.target.value });
+                    }}
+                />
 
 
                 {/* select progress from seasons and episodes */}
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 mt-4">
                     <label className="text-[#D69500] text-xl font-semibold">Season & Episode Progress</label>
-                    
-                    {/* get series seasons and episods from API */}
-                    <button 
-                        className="flex items-center justify-between w-full px-3 py-1 text-white rounded border border-[#0CB321] 
-                        hover:bg-[#0f661a] transition text-sm"
-                        onClick={() => console.log("get seasons and episodes API")}
-                    >
-                        GRABBIT
-                    </button>
 
-                    {/* season */}
-                    <CustomDropdown 
-                        currentStatus={seasonProgress}
-                        options={["S1", "S2", "S3", "S4"]}
-                        onSelect={(newVal) => setSeasonProgress(newVal)}
-                    />
-                    {/* episode */}
-                    <CustomDropdown 
-                        currentStatus={episodeProgress}
-                        options={["EP1", "EP2", "EP3", "EP4"]}
-                        onSelect={(newVal) => setEpisodeProgress(newVal)}
-                    />
-                    {/* episode title */}
-                    <CustomInput
-                        label=""
-                        inputType="text"
-                        placeholder="Episode Title"
-                        value={episodeTitle}
-                        onChange={(e) => {
-                            setEpisodeTitle(e.target.value);
-                        }}
-                    />
+                    <div className="grid w-full grid-cols-3">
+                        {/* season label */}
+                        <p>Select Season</p>
+                        {/* episode label */}
+                        <p>Select Episode</p>
+                        {/* episode title label */}
+                        <p>Episdoe Title</p>
+
+                        {/* season dropdown */}
+                        <CustomDropdown 
+                            currentStatus={seasonProgress}
+                            options={seasonOptions}
+                            onSelect={(newVal) => {
+                                setSeasonProgress(newVal)
+                                // reset episode when season changes
+                                setEpisodeProgress("")
+                                setEpisodeTitle("")
+                            }}
+                        />
+                        {/* episode dropdown */}
+                        <CustomDropdown 
+                            isDisabled={!seasonProgress}
+                            currentStatus={episodeProgress}
+                            options={episodeOptions}
+                            onSelect={(newVal) => setEpisodeProgress(newVal)}
+                        />
+                        {/* episode title */}
+                        <label className="text-[#23d33b] text-xl font-semibold">
+                            {episodeTitle || "Select an episode"}
+                        </label>
+                    </div>
                 </div>
 
 
                 {/* status */}
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 mt-4">
                     <label className="text-[#D69500] text-xl font-semibold">Status</label>
                     <MediaStatusBtn
                         disabled={false}
@@ -345,7 +391,7 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
 
             {/* create manga */}
             <button
-                className="w-full py-2 sm:py-3 mt-4 bg-[#058000] text-white font-bold rounded-lg hover:bg-[#48d843] hover:text-black transition"
+                className="w-full py-2 sm:py-3 mt-6 bg-[#058000] text-white font-bold rounded-lg hover:bg-[#48d843] hover:text-black transition"
                 onClick={handleCreateMangaItem}
             >
                 Create Manga
@@ -371,7 +417,7 @@ const CustomInput = ({
 }) => {
     return (
         <div className="flex flex-col gap-2 w-full">
-            <label className="text-[#D69500] text-xl font-semibold">{label}</label>
+            <label className="text-[#D69500] text-xl font-semibold mt-4">{label}</label>
             <input
                 type={inputType}
                 className="w-full px-3 py-2 bg-gray-200 rounded-lg text-gray-800 text-sm sm:text-base focus:outline-none focus:border-gray-300"
@@ -383,7 +429,17 @@ const CustomInput = ({
     );
 };
 
-export const CustomDropdown = ({ currentStatus, options, onSelect }: { currentStatus: string; options: string[]; onSelect: (status: string) => void; }) => {
+export const CustomDropdown = ({
+    isDisabled = false,
+    currentStatus,
+    options,
+    onSelect,
+}: {
+    isDisabled?: boolean;
+    currentStatus: string;
+    options: string[];
+    onSelect: (status: string) => void;
+}) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleDropdown = () => {
@@ -398,14 +454,26 @@ export const CustomDropdown = ({ currentStatus, options, onSelect }: { currentSt
     return (
         <div className="relative w-full text-left sm:w-40">
             <button
+                disabled={isDisabled}
                 className="flex items-center justify-between w-full px-3 py-1 text-white rounded border border-[#0CB321] 
                 hover:bg-[#0f661a] transition text-sm"
                 onClick={toggleDropdown}
             >
                 <p>{currentStatus}</p>
                 {/* down arrow*/}
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 9l-7 7-7-7"
+                    ></path>
                 </svg>
             </button>
             {isOpen && (
