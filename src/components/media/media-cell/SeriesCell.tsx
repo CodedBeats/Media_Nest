@@ -30,6 +30,9 @@ const SeriesCell = ({
     progress: string;
     rating: number;
 }) => {
+    //! temp for vercel prod
+    console.log("just cause i can't have nice things", `tvMazeID: ${tvMazeID}, seriesEpisodeDetails: ${seriesEpisodeDetails}`)
+
     // context
     const { user } = useAuth();
 
@@ -54,10 +57,10 @@ const SeriesCell = ({
     };
 
     // show and hide edit series form
-    // const handleShowEditMangaForm = () => {
+    // const handleShowEditSeriesForm = () => {
     //     setShowEditSeriesForm(true);
     // };
-    // const handleCloseEditMangaForm = () => {
+    // const handleCloseEditSeriesForm = () => {
     //     setShowEditSeriesForm(false);
     // }
 
@@ -117,7 +120,7 @@ const SeriesCell = ({
                 {user && (
                 <button
                     className="px-5 py-2 bg-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
-                    onClick={() => console.log("handleShowEditMangaForm")}
+                    onClick={() => console.log("handleShowEditSeriesForm")}
                 >
                     Edit
                 </button>
@@ -131,7 +134,7 @@ const SeriesCell = ({
                 <div className="w-32 h-48 md:w-22 md:h-30 flex-shrink-0">
                     <img
                         src={imgUrl}
-                        alt="manga cover"
+                        alt="series cover"
                         className="w-full h-full object-cover rounded-md"
                     />
                 </div>
@@ -176,7 +179,7 @@ const SeriesCell = ({
                         {user && (
                             <button
                                 className="px-8 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition text-sm"
-                                onClick={() => console.log("handleShowEditMangaForm")}
+                                onClick={() => console.log("handleShowEditSeriesForm")}
                             >
                                 Edit
                             </button>
@@ -196,19 +199,18 @@ const SeriesCell = ({
             </div>
 
             {/* --- Edit Form --- */}
-            {/* {showEditMangaForm && user && (
+            {/* {showEditSeriesForm && user && (
                 <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 overflow-y-auto p-4">
                     <div className="mt-10 mb-10 w-full sm:w-[80%] md:w-[50%]">
-                        <EditMangaForm
+                        <EditSeriesForm
                             id={id || ""}
-                            mangadexID={mangadexID || ""}
                             title={title || ""}
                             author={author || ""}
                             status={labelStatus}
                             rating={rating || 0}
                             progress={progress || ""}
                             imgUrl={imgUrl || ""}
-                            closeForm={handleCloseEditMangaForm}
+                            closeForm={handleCloseEditSeriesForm}
                         />
                     </div>
                 </div>
