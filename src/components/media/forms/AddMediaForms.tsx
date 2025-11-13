@@ -227,8 +227,8 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
         if (show) setFormData(show);
     }
 
-    // handle create manga item
-    const handleCreateMangaItem = async () => {
+    // handle create series item
+    const handleCreateSeriesItem = async () => {
         // validate form data
         if (
             !checkEmptyInput(formData.title) ||
@@ -250,7 +250,7 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
         // create series item
         try {
             await createSeriesItem(newSeriesItem)
-            console.log("Manga added successfully")
+            console.log("Series added successfully")
 
             // reset season and episode and title
             setSeasonProgress("")
@@ -268,7 +268,7 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
             });
             setStatusLabelState("Status: None")
         } catch (error) {
-            console.error("Failed to add manga:", error)
+            console.error("Failed to add Series:", error)
         }
     }
 
@@ -389,9 +389,9 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
             {/* create manga */}
             <button
                 className="w-full py-2 sm:py-3 mt-6 bg-[#058000] text-white font-bold rounded-lg hover:bg-[#48d843] hover:text-black transition"
-                onClick={handleCreateMangaItem}
+                onClick={handleCreateSeriesItem}
             >
-                Create Manga
+                Create Tv Show
             </button>
         </div>
     );

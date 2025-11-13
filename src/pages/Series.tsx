@@ -4,14 +4,18 @@ import { useState } from "react";
 // components
 import Search from "../components/common/Search";
 import { AddSeriesForm } from "../components/media/forms/AddMediaForms"
+import SeriesCell from "../components/media/media-cell/SeriesCell";
 
 // hooks
 import { useAuth } from "../hooks/useFirebaseAuth";
+import { useFetchAllSeriesItems } from "../hooks/useFirestore";
 
 
 const Series = () => {
     // context
     const { user } = useAuth();
+    // fetch manga from firebase with custom hook
+    const { seriesItems, isLoading, error, refetch } = useFetchAllSeriesItems();
 
     // state
     // const [searchQuery, setSearchQuery] = useState<string>("");
@@ -120,7 +124,6 @@ const Series = () => {
                         Load More
                     </button>
                 )} */}
-                series here
             </div>
 
             {/* add series form */}
