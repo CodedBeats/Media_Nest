@@ -6,7 +6,7 @@ const Search = ({ onClick }: { onClick: (searchQuery: string) => void }) => {
     const [query, setQuery] = useState("");
 
     return (
-        <div className="flex items-center justify-center gap-4 w-full">
+        <div className="flex items-center justify-center gap-4 w-full sm:w-[60%]">
             <input
                 type="text"
                 placeholder="Input search query..."

@@ -1,17 +1,18 @@
 // dependencies
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // components
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
+import { CustomInput, CustomDropdown } from "../../common/FormFields";
 
 // api
-import { updateMangaItemByID } from "../../../apis/firebase/firestore";
+import { updateMangaItemByID, updateSeriesItemByID } from "../../../apis/firebase/firestore";
 
 // utility
-import { type MangaItem } from "../../../utility/interfaces";
+import { type MangaItem, type SeriesItem } from "../../../utility/interfaces";
 import { checkEmptyInput } from "../../../utility/manipulateStr";
 
-// add manga form
+// edit manga form
 export const EditMangaForm = ({
     id,
     mangadexID,
@@ -174,30 +175,254 @@ export const EditMangaForm = ({
     );
 };
 
-// custon form input (also cause updating tailwing classes in each div is a pain)
-const CustomInput = ({
-    label,
-    inputType,
-    placeholder,
-    value,
-    onChange,
-}: {
-    label: string;
-    inputType: string;
-    placeholder: string;
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+
+// edit tv series form
+export const EditSeriesForm = ({ 
+    id,
+    tvMazeID,
+    title,
+    imgUrl,
+    seriesEpisodeDetails,
+    status,
+    progress,
+    rating,
+    closeForm 
+}: { 
+    id: string;
+    tvMazeID: number;
+    title: string;
+    imgUrl: string;
+    seriesEpisodeDetails: Array<{
+        seasonNum: number;
+        episodeNum: number;
+        episodeName: string;
+    }>;
+    status: string;
+    progress: string;
+    rating: number;
+    closeForm: () => void 
 }) => {
+    // state
+    const [formData, setFormData] = useState<SeriesItem>({
+        id: id,
+        tvMazeID: tvMazeID,
+        title: title,
+        status: status,
+        rating: rating,
+        progress: progress,
+        imgUrl: imgUrl,
+        seriesEpisodeDetails: seriesEpisodeDetails,
+    });
+    const [statusLabelState, setStatusLabelState] = useState<string>(status);
+    const [seasonProgress, setSeasonProgress] = useState<string>("S0")
+    const [episodeProgress, setEpisodeProgress] = useState<string>("EP0")
+    const [episodeTitle, setEpisodeTitle] = useState<string>("")
+
+
+    // init season num, episdoe num and episode name states WHEN formData.progress comes in
+    useEffect(() => {
+        // idc if this is not pretty, this is pure (no AI, no auto complete, no docs) exp and js knowledge
+        const progressAsArr = formData.progress.split("")
+        
+        // get indexes for spaces (needed just for the first 2)
+        const spaceIndexs: number[] = []
+        progressAsArr.forEach((letter, index) => {
+            if (letter === " ") {
+                spaceIndexs.push(index)
+            }
+        })
+        // console.log(spaceIndexs)
+        
+        const seasonNum = progressAsArr.slice(0, spaceIndexs[0]).join("")
+        const episodeNum = progressAsArr.slice(spaceIndexs[0] + 1, spaceIndexs[1]).join("")
+        const episdoeName = progressAsArr.slice(spaceIndexs[1] + 1).join("")
+        
+        setSeasonProgress(seasonNum)
+        setEpisodeProgress(episodeNum)
+        setEpisodeTitle(episdoeName)
+        
+    }, [formData.progress])
+
+
+    // get all seasons
+    const seasonOptions = Array.from( 
+        new Set(formData.seriesEpisodeDetails.map(ep => ep.seasonNum)) 
+    ).map(num => `S${num}`);
+    // get episode options based on season
+    const filteredEpisodes = formData.seriesEpisodeDetails.filter(
+        ep => ep.seasonNum === Number(seasonProgress.replace("S", ""))
+    );
+    const episodeOptions = filteredEpisodes.map(ep => `EP${ep.episodeNum}`);
+
+    // find and set episode title on episode selection
+    useEffect(() => {
+        if (!seasonProgress || !episodeProgress) return;
+
+        const selectedSeason = Number(seasonProgress.replace("S", ""));
+        const selectedEpisode = Number(episodeProgress.replace("EP", ""));
+
+        const match = formData.seriesEpisodeDetails.find(
+            ep => ep.seasonNum === selectedSeason && ep.episodeNum === selectedEpisode
+        );
+
+        if (match) setEpisodeTitle(match.episodeName)
+    }, [seasonProgress, episodeProgress, formData.seriesEpisodeDetails]);
+
+
+
+    // handle set status
+    const handleSetStatus = (status: string) => {
+        setStatusLabelState(status);
+        setFormData({ ...formData, status: status });
+    };
+
+    // handle edit series item
+    const handleEditSeriesItem = async () => {
+        // validate form data
+        if (
+            !checkEmptyInput(formData.title) ||
+            !checkEmptyInput(formData.imgUrl) || 
+            formData.tvMazeID == 0
+        ) {
+            alert("Required fields: Title, Image URL, tvMazeID");
+            return;
+        }
+
+        // concat season, episode and title together
+        const concatProgress = `${seasonProgress} ${episodeProgress} ${episodeTitle}`
+        const newSeriesItem = {
+            ...formData,
+            progress: concatProgress
+        };
+
+
+        // edit series item
+        try {
+            await updateSeriesItemByID(id, newSeriesItem)
+            console.log("Series updated successfully")
+
+            
+            // close form
+            closeForm();
+
+        } catch (error) {
+            console.error("Failed to update Series:", error)
+        }
+    }
+
     return (
-        <div className="flex flex-col gap-2 w-full">
-            <label className="text-[#D69500] text-xl font-semibold">{label}</label>
-            <input
-                type={inputType}
-                className="w-full px-3 py-2 bg-gray-200 rounded-lg text-gray-800 text-sm sm:text-base focus:outline-none focus:border-gray-300"
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-            />
+        <div className="bg-[#1f1f1f] rounded-2xl shadow-xl p-6 sm:p-10 w-full flex flex-col gap-6 text-white">
+            {/* header */}
+            <div className="flex justify-between items-center">
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#D69500]">Add New TV Show</h2>
+                <button
+                    className="px-3 py-1 sm:px-4 sm:py-2 bg-blue-700 rounded-lg hover:bg-blue-600 transition text-sm"
+                    onClick={closeForm}
+                >
+                    Close
+                </button>
+            </div>
+
+            {/* form fields */}
+            <div className="flex flex-col gap-4">
+                <CustomInput
+                    label="Title"
+                    inputType="text"
+                    placeholder="Series Title"
+                    value={formData.title}
+                    onChange={(e) => {
+                        setFormData({ ...formData, title: e.target.value });
+                    }}
+                />
+
+                <CustomInput
+                    label="Cover Image"
+                    inputType="text"
+                    placeholder="Image URL"
+                    value={formData.imgUrl || ""}
+                    onChange={(e) => {
+                        setFormData({ ...formData, imgUrl: e.target.value });
+                    }}
+                />
+
+
+                {/* select progress from seasons and episodes */}
+                <div className="flex flex-col gap-2 mt-4">
+                    <label className="text-[#D69500] text-xl font-semibold">Season & Episode Progress</label>
+
+                    <div className="grid w-full grid-cols-3">
+                        {/* season label */}
+                        <p>Select Season</p>
+                        {/* episode label */}
+                        <p>Select Episode</p>
+                        {/* episode title label */}
+                        <p>Episdoe Title</p>
+
+                        {/* season dropdown */}
+                        <CustomDropdown 
+                            currentStatus={seasonProgress}
+                            options={seasonOptions}
+                            onSelect={(newVal) => {
+                                setSeasonProgress(newVal)
+                                // reset episode when season changes
+                                setEpisodeProgress("")
+                                setEpisodeTitle("")
+                            }}
+                        />
+                        {/* episode dropdown */}
+                        <CustomDropdown 
+                            isDisabled={!seasonProgress}
+                            currentStatus={episodeProgress}
+                            options={episodeOptions}
+                            onSelect={(newVal) => setEpisodeProgress(newVal)}
+                        />
+                        {/* episode title */}
+                        <label className="text-[#23d33b] text-xl font-semibold">
+                            {episodeTitle || "Select an episode"}
+                        </label>
+                    </div>
+                </div>
+
+
+                {/* status */}
+                <div className="flex flex-col gap-2 mt-4">
+                    <label className="text-[#D69500] text-xl font-semibold">Status</label>
+                    <MediaStatusBtn
+                        disabled={false}
+                        currentStatus={statusLabelState}
+                        options={[
+                            "Status: None",
+                            "Watching",
+                            "Completed",
+                            "On Hold",
+                            "Dropped",
+                            "Plan to Watch",
+                        ]}
+                        onSelect={(newStatus) => handleSetStatus(newStatus)}
+                    />
+                </div>
+
+                <CustomInput
+                    label="Rating"
+                    inputType="number"
+                    placeholder="Series Rating: 1-10"
+                    value={formData.rating.toString()}
+                    onChange={(e) => {
+                        setFormData({
+                            ...formData,
+                            rating: parseInt(e.target.value),
+                        });
+                    }}
+                />
+            </div>
+
+            {/* update series */}
+            <button
+                className="w-full py-2 sm:py-3 mt-6 bg-[#058000] text-white font-bold rounded-lg hover:bg-[#48d843] hover:text-black transition"
+                onClick={handleEditSeriesItem}
+            >
+                Update Tv Show
+            </button>
         </div>
     );
 };
