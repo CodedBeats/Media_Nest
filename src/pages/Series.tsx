@@ -7,6 +7,7 @@ import { AddSeriesForm } from "../components/media/forms/AddMediaForms"
 
 // hooks
 import { useAuth } from "../hooks/useFirebaseAuth";
+import { useFecthShow } from "../hooks/useTvMaze";
 
 
 const Series = () => {
@@ -16,6 +17,8 @@ const Series = () => {
     // state
     // const [searchQuery, setSearchQuery] = useState<string>("");
     const [showAddSeriesForm, setShowAddSeriesForm] = useState<boolean>(false);
+
+    const { showData, isLoading, error, refetch } = useFecthShow("better call caul");
 
 
     return (

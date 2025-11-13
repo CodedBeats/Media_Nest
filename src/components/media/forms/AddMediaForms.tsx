@@ -172,6 +172,7 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
 export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
     // state
     const [formData, setFormData] = useState<SeriesItem>({
+        tvMazeID: 0,
         title: "",
         status: "Status: None",
         rating: 0,
