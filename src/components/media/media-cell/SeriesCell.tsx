@@ -1,9 +1,9 @@
 // components
 import { useState } from "react";
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
-import { EditMangaForm } from "../forms/EditMediaForms";
+// import { EditSeriesForm } from "../forms/EditMediaForms";
 // api
-import { updateMangaItemByID } from "../../../apis/firebase/firestore";
+import { updateSeriesItemByID } from "../../../apis/firebase/firestore";
 // context
 import { useAuth } from "../../../hooks/useFirebaseAuth";
 
@@ -39,19 +39,19 @@ const SeriesCell = ({
     // const [showEditSeriesForm, setShowEditSeriesForm] = useState(false);
 
     // handle status change
-    // const handleUpdateSeriesStatus = () => {
-    //     if (labelStatus == originalStatus) return;
+    const handleUpdateSeriesStatus = () => {
+        if (labelStatus == originalStatus) return;
 
-    //     // update series status with firebase api call
-    //     updateSeriesItemByID(id || "", { status: labelStatus })
-    //         .then(() => {
-    //             console.log("Series status updated successfully");
-    //             setOriginalStatus(labelStatus); // update original status to new status
-    //         })
-    //         .catch((error) => {
-    //             console.error("Error updating series status: ", error);
-    //         });
-    // };
+        // update series status with firebase api call
+        updateSeriesItemByID(id || "", { status: labelStatus })
+            .then(() => {
+                console.log("Series status updated successfully");
+                setOriginalStatus(labelStatus); // update original status to new status
+            })
+            .catch((error) => {
+                console.error("Error updating series status: ", error);
+            });
+    };
 
     // show and hide edit series form
     // const handleShowEditMangaForm = () => {
@@ -108,7 +108,7 @@ const SeriesCell = ({
                 {labelStatus !== originalStatus && (
                 <button
                     className="px-5 py-2 bg-green-900 text-white rounded-md hover:bg-green-700 transition text-sm w-[100%]"
-                    onClick={() => console.log("handleUpdateMangaStatus")}
+                    onClick={handleUpdateSeriesStatus}
                 >
                     Update Status
                 </button>
@@ -162,7 +162,7 @@ const SeriesCell = ({
                         {labelStatus !== originalStatus && (
                             <button
                                 className="px-3 py-1 bg-green-900 text-white rounded hover:bg-green-700 transition text-sm"
-                                onClick={() => console.log("handleUpdateMangaStatus")}
+                                onClick={handleUpdateSeriesStatus}
                             >
                                 Update Status
                             </button>
