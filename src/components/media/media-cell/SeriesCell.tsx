@@ -1,11 +1,13 @@
 // components
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 import { EditSeriesForm } from "../forms/EditMediaForms";
 // api
 import { updateSeriesItemByID } from "../../../apis/firebase/firestore";
 // context
 import { useAuth } from "../../../hooks/useFirebaseAuth";
+// utility
+import { formatSeriesProgress } from "../../../utility/manipulateStr";
 
 
 const SeriesCell = ({
@@ -38,6 +40,20 @@ const SeriesCell = ({
     const [originalStatus, setOriginalStatus] = useState(status ?? "Select Status");
     const [labelStatus, setLabelStatus] = useState(status ?? "Select Status");
     const [showEditSeriesForm, setShowEditSeriesForm] = useState(false);
+    const [progressSeasonNum, setProgressSeasonNum] = useState("")
+    const [progressEpisdoeNum, setProgressEpisdoeNum] = useState("")
+    const [progressEpisdoeName, setProgressEpisdoeName] = useState("")
+
+
+    // init formatted progress
+    useEffect(() => {
+        const {seasonNum, episodeNum, episdoeName} = formatSeriesProgress(progress)
+        setProgressSeasonNum(seasonNum)
+        setProgressEpisdoeNum(episodeNum)
+        setProgressEpisdoeName(episdoeName)
+    },[])
+
+
 
     // handle status change
     const handleUpdateSeriesStatus = () => {
@@ -89,10 +105,15 @@ const SeriesCell = ({
                                 : "Unrated"}
                         </p>
                     </div>
-
-                    <p className="text-gray-400 text-sm mt-2">
-                        Progress: {progress}
-                    </p>
+                    
+                    <div className="flex gap-2">
+                        <p className="text-gray-400 text-sm mt-2">
+                            Season {progressSeasonNum}
+                        </p>
+                        <p className="text-gray-400 text-sm mt-2">
+                            Episode {progressEpisdoeNum}
+                        </p>
+                    </div>
                 </div>
             </div>
             {/* actions below img */}
@@ -168,9 +189,17 @@ const SeriesCell = ({
                                 Update Status
                             </button>
                         )}
-                        <p className="text-gray-300 text-sm sm:text-base">
-                            Progress: {progress}
-                        </p>
+                        <div className="flex gap-2">
+                            <p className="text-gray-200 text-sm">
+                                Season {progressSeasonNum}
+                            </p>
+                            <p className="text-gray-200 text-sm">
+                                Episode {progressEpisdoeNum}
+                            </p>
+                            <p className="text-gray-400 text-sm pl-5">
+                                {progressEpisdoeName}
+                            </p>
+                        </div>
                     </div>
 
                     <div className="align-bottom">
