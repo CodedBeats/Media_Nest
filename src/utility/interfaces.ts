@@ -22,9 +22,14 @@ export type MangaItemWithCover = MangaItem & {
 // SERIES
 export interface SeriesItem {
     id?: string;
+    tvMazeID: number;
     title: string;
     imgUrl: string;
-    seriesEpisodeDetails: object[];
+    seriesEpisodeDetails: Array<{
+        seasonNum: number;
+        episodeNum: number;
+        episodeName: string;
+    }>;
     status: string;
     progress: string;
     rating: number;
