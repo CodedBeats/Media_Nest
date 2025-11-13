@@ -101,40 +101,40 @@ const DesktopHomeLinks = () => {
         {/* Movies */}
         <FancyLink 
             to="/coming-soon"
-            width= "16%"
-            height= "23%"
-            top= "24%"
-            left= "30%"
+            width= "14%"
+            height= "25%"
+            top= "20%"
+            left= "33%"
             rotate= "80"
         />
 
         {/* Series */}
         <FancyLink 
             to="/series"
-            width= "12%"
-            height= "20%"
-            top= "26%"
-            left= "51%"
+            width= "14%"
+            height= "23%"
+            top= "20%"
+            left= "49%"
             rotate= "10"
         />
 
         {/* Books */}
         <FancyLink 
             to="/coming-soon"
-            width= "15%"
-            height= "20%"
-            top= "53%"
-            left= "30%"
+            width= "14%"
+            height= "26%"
+            top= "57%"
+            left= "32%"
             rotate= "70"
         />
 
         {/* Manga */}
         <FancyLink 
             to="/manga"
-            width= "13%"
-            height= "20%"
-            top= "53%"
-            left= "54%"
+            width= "15%"
+            height= "27%"
+            top= "55%"
+            left= "51%"
             rotate= "22"
         />
         </>
