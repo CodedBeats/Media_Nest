@@ -6,12 +6,12 @@ import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 import { CustomInput, CustomDropdown } from "../../common/FormFields";
 
 // api
-import { createMangaItem, createSeriesItem } from "../../../apis/firebase/firestore";
+import { createMangaItem, createMovieItem, createSeriesItem } from "../../../apis/firebase/firestore";
 
 // utility
-import { type MangaItem, type SeriesItem } from "../../../utility/interfaces";
+import { type MangaItem, type MovieItem, type SeriesItem } from "../../../utility/interfaces";
 import { checkEmptyInput } from "../../../utility/manipulateStr";
-import { fetchShowDataAPI } from "../../../utility/fetchHelpers";
+import { fetchMovieDataAPI, fetchShowDataAPI } from "../../../utility/fetchHelpers";
 
 
 
@@ -413,6 +413,184 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
                 onClick={handleCreateSeriesItem}
             >
                 Create Tv Show
+            </button>
+        </div>
+    );
+};
+
+
+
+// add tv movie form
+export const AddMovieForm = ({ closeForm }: { closeForm: () => void }) => {
+    // state
+    const [formData, setFormData] = useState<MovieItem>({
+        title: "",
+        imgUrl: "",
+        year: 0,
+        director: "",
+        status: "Status: None",
+        rating: 0,
+    });
+    const [statusLabelState, setStatusLabelState] = useState<string>("Status: None");
+
+
+
+    // handle set status
+    const handleSetStatus = (status: string) => {
+        setStatusLabelState(status);
+        setFormData({ ...formData, status: status });
+    };
+
+    // use OMDB api to get data on show
+    const grabMovie = async () => {
+        const show = await fetchMovieDataAPI(formData.title);
+        if (show) setFormData(show);
+    }
+
+    // handle create movie item
+    const handleCreateMovieItem = async () => {
+        // validate form data
+        if (
+            !checkEmptyInput(formData.title) ||
+            !checkEmptyInput(formData.imgUrl) || 
+            !checkEmptyInput(formData.director) || 
+            formData.year == 0
+        ) {
+            alert("Required fields: Title, Image URL, direcor, year");
+            return;
+        }
+
+        const newMovieItem = { ...formData }
+
+        // create movie item
+        try {
+            await createMovieItem(newMovieItem)
+            console.log("movie added successfully")
+
+            // reset form data
+            setFormData({
+                 title: "",
+                imgUrl: "",
+                year: 0,
+                director: "",
+                status: "Status: None",
+                rating: 0
+            });
+            setStatusLabelState("Status: None")
+
+        } catch (error) {
+            console.error("Failed to add Series:", error)
+        }
+    }
+
+    return (
+        <div className="bg-[#1f1f1f] rounded-2xl shadow-xl p-6 sm:p-10 w-full flex flex-col gap-6 text-white">
+            {/* header */}
+            <div className="flex justify-between items-center">
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#D69500]">Add New Movie</h2>
+                <button
+                    className="px-3 py-1 sm:px-4 sm:py-2 bg-blue-700 rounded-lg hover:bg-blue-600 transition text-sm"
+                    onClick={closeForm}
+                >
+                    Close
+                </button>
+            </div>
+
+            {/* form fields */}
+            <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                    {/* input title */}
+                    <CustomInput
+                        label="Title"
+                        inputType="text"
+                        placeholder="Series Title"
+                        value={formData.title}
+                        onChange={(e) => {
+                            setFormData({ ...formData, title: e.target.value });
+                        }}
+                    />
+                    {/* search for movie */}
+                    <button 
+                        className="flex items-center justify-between w-full px-3 py-1 text-sm text-white rounded border border-[#0CB321] 
+                        hover:bg-[#0f661a] transition"
+                        onClick={grabMovie}
+                    >
+                        GRABBIT
+                    </button>
+                </div>
+
+                {/* cover img */}
+                <CustomInput
+                    label="Cover Image"
+                    inputType="text"
+                    placeholder="Image URL"
+                    value={formData.imgUrl || ""}
+                    onChange={(e) => {
+                        setFormData({ ...formData, imgUrl: e.target.value });
+                    }}
+                />
+
+                {/* Director */}
+                <CustomInput
+                    label="Director"
+                    inputType="text"
+                    placeholder="Director"
+                    value={formData.director || ""}
+                    onChange={(e) => {
+                        setFormData({ ...formData, director: e.target.value });
+                    }}
+                />
+
+                {/* year */}
+                <CustomInput
+                    label="Year"
+                    inputType="text"
+                    placeholder="Year"
+                    value={formData.year.toString()}
+                    onChange={(e) => {
+                        setFormData({ ...formData, year: parseInt(e.target.value) });
+                    }}
+                />
+
+                {/* status */}
+                <div className="flex flex-col gap-2 mt-4">
+                    <label className="text-[#D69500] text-xl font-semibold">Status</label>
+                    <MediaStatusBtn
+                        disabled={false}
+                        currentStatus={statusLabelState}
+                        options={[
+                            "Status: None",
+                            "Watching",
+                            "Completed",
+                            "On Hold",
+                            "Dropped",
+                            "Plan to Watch",
+                        ]}
+                        onSelect={(newStatus) => handleSetStatus(newStatus)}
+                    />
+                </div>
+
+                {/* rating */}
+                <CustomInput
+                    label="Rating"
+                    inputType="number"
+                    placeholder="Series Rating: 1-10"
+                    value={formData.rating.toString()}
+                    onChange={(e) => {
+                        setFormData({
+                            ...formData,
+                            rating: parseInt(e.target.value),
+                        });
+                    }}
+                />
+            </div>
+
+            {/* create series */}
+            <button
+                className="w-full py-2 sm:py-3 mt-6 bg-[#058000] text-white font-bold rounded-lg hover:bg-[#48d843] hover:text-black transition"
+                onClick={handleCreateMovieItem}
+            >
+                Create Movie
             </button>
         </div>
     );
