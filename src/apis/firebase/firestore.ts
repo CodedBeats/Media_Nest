@@ -4,10 +4,11 @@ import { db } from "./firebaseConfig";
 import { addDoc, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 
 // utility
-import { type MangaItem, type SeriesItem } from "../../utility/interfaces";
+import { type MangaItem, type MovieItem, type SeriesItem } from "../../utility/interfaces";
 
 const mangaCollection = "manga"
 const seriesCollection = "series"
+const moviesCollection = "movies"
 
 
 // === CREATE === //
@@ -25,6 +26,16 @@ export const createMangaItem = async (mangaItem: MangaItem): Promise<void> => {
 export const createSeriesItem = async (seriesItem: SeriesItem): Promise<void> => {
     try {
         await addDoc(collection(db, seriesCollection), seriesItem);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+        throw e;
+    }
+}
+
+// create movie item
+export const createMovieItem = async (movieItem: MovieItem): Promise<void> => {
+    try {
+        await addDoc(collection(db, moviesCollection), movieItem)
     } catch (e) {
         console.error("Error adding document: ", e);
         throw e;
@@ -69,6 +80,17 @@ export const fetchAllSeriesItems = async (): Promise<SeriesItem[]> => {
 };
 
 
+// fetch all movie items
+export const fetchAllMovieItems = async (): Promise<MovieItem[]> => {
+    const querySnapshot = await getDocs(collection(db, moviesCollection));
+    const movieItems: MovieItem[] = [];
+    querySnapshot.forEach((doc) => {
+        movieItems.push({ id: doc.id, ...doc.data() } as MovieItem);
+    });
+    return movieItems;
+};
+
+
 
 // === UPDATE === //
 // update manga item by id
@@ -85,15 +107,28 @@ export const updateMangaItemByID = async (mangaID: string, updateMangaData: obje
 
 
 // update seriesItem by id
-export const updateSeriesItemByID = async (seriesID: string, updateSeriesData: object): Promise<void> => {
+export const updateSeriesItemByID = async (seriesID: string, updatedSeriesData: object): Promise<void> => {
     const docRef = doc(db, seriesCollection, seriesID);
     try {
-        await updateDoc(docRef, updateSeriesData);
+        await updateDoc(docRef, updatedSeriesData);
     } catch (e) {
         console.error("error updating document: ", e);
         throw e;
     }
 }
+
+
+// update moveItem by id
+export const updateMovieItemByID = async (movieID: string, updatedMovieData: object): Promise<void> => {
+    const docRef = doc(db, moviesCollection, movieID);
+    try {
+        await updateDoc(docRef, updatedMovieData);
+    } catch (e) {
+        console.error("error updating document: ", e);
+        throw e;
+    }
+}
+
 
 
 // === DELETE === //
