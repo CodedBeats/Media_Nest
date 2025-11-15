@@ -21,7 +21,7 @@ export const checkEmptyInput = (input: string) => {
 
 
 // format series item progress
-export const formatSeriesProgress = (str: string) => {
+export const extractSeriesProgress = (str: string) => {
     const progressAsArr = str.split("")
     
     // get indexes for spaces (needed just for the first 2)

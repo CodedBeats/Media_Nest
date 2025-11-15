@@ -288,23 +288,25 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
 
             {/* form fields */}
             <div className="flex flex-col gap-4">
-                <CustomInput
-                    label="Title"
-                    inputType="text"
-                    placeholder="Series Title"
-                    value={formData.title}
-                    onChange={(e) => {
-                        setFormData({ ...formData, title: e.target.value });
-                    }}
-                />
-                {/* search for tv show */}
-                <button 
-                    className="flex items-center justify-between w-full px-3 py-1 text-sm text-white rounded border border-[#0CB321] 
-                    hover:bg-[#0f661a] transition"
-                    onClick={grabSeries}
-                >
-                    GRABBIT
-                </button>
+                <div className="flex flex-col gap-2">
+                    <CustomInput
+                        label="Title"
+                        inputType="text"
+                        placeholder="Series Title"
+                        value={formData.title}
+                        onChange={(e) => {
+                            setFormData({ ...formData, title: e.target.value });
+                        }}
+                    />
+                    {/* search for tv show */}
+                    <button 
+                        className="flex items-center justify-between w-full px-3 py-1 text-sm text-white rounded border border-[#0CB321] 
+                        hover:bg-[#0f661a] transition"
+                        onClick={grabSeries}
+                    >
+                        GRABBIT
+                    </button>
+                </div>
 
                 <CustomInput
                     label="Cover Image"
@@ -321,13 +323,28 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
                 <div className="flex flex-col gap-2 mt-4">
                     <label className="text-[#D69500] text-xl font-semibold">Season & Episode Progress</label>
 
-                    <div className="grid w-full grid-cols-3">
+                    <div className="grid w-full grid-cols-2 sm:grid-cols-3 gap-x-3 sm:gap-0">
                         {/* season label */}
-                        <p>Select Season</p>
+                        <p 
+                            className="col-start-1 row-start-1
+                            pb-2"
+                        >
+                            Select Season
+                        </p>
                         {/* episode label */}
-                        <p>Select Episode</p>
+                        <p 
+                            className="col-start-2 row-start-1
+                            pb-2"
+                        >
+                            Select Episode
+                        </p>
                         {/* episode title label */}
-                        <p>Episdoe Title</p>
+                        <p 
+                            className="col-start-1 sm:col-start-3 col-end-3 sm:col-end-4 row-start-3 sm:row-start-1
+                            pt-4 sm:pt-0"
+                        >
+                            Episdoe Title
+                        </p>
 
                         {/* season dropdown */}
                         <CustomDropdown 
@@ -348,7 +365,10 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
                             onSelect={(newVal) => setEpisodeProgress(newVal)}
                         />
                         {/* episode title */}
-                        <label className="text-[#23d33b] text-xl font-semibold">
+                        <label 
+                            className="text-[#23d33b] text-xl font-semibold
+                            col-start-1 sm:col-start-3 col-end-3 sm:col-end-4 row-start-4 sm:row-start-2"
+                        >
                             {episodeTitle || "Select an episode"}
                         </label>
                     </div>
