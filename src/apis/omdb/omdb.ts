@@ -2,6 +2,7 @@ interface OMDBMovieData {
     title: number;
     year: number;
     director: string;
+    imgUrl: string;
 }
 
 export const getOMDBMovieData = async (movieName: string): Promise<OMDBMovieData> => {
@@ -19,10 +20,12 @@ export const getOMDBMovieData = async (movieName: string): Promise<OMDBMovieData
 
         const data = await response.json()
         console.log("movie data", data)
+        
         return {
             title: data.Title, 
             year: data.Year,
-            director: data.Director
+            director: data.Director,
+            imgUrl: data.Poster
         }
 
     } catch (err) {
