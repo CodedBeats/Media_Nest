@@ -11,7 +11,7 @@ import { createMangaItem, createSeriesItem } from "../../../apis/firebase/firest
 // utility
 import { type MangaItem, type SeriesItem } from "../../../utility/interfaces";
 import { checkEmptyInput } from "../../../utility/manipulateStr";
-import { fetchShowData } from "../../../utility/fetchHelpers";
+import { fetchShowDataAPI } from "../../../utility/fetchHelpers";
 
 
 
@@ -224,7 +224,7 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
 
     // use tv maze api to get data on show
     const grabSeries = async () => {
-        const show = await fetchShowData(formData.title);
+        const show = await fetchShowDataAPI(formData.title);
         if (show) setFormData(show);
     }
 
