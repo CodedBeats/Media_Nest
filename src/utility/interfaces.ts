@@ -35,28 +35,22 @@ export interface SeriesItem {
     rating: number;
 }
 
-// === example ===
-// const stats = {
-//     title: "Better Call Saul",
-//     thumbnailUrl: "URL to official poster or thumbnail image",
-//     seriesEpisodeDetails: [
-//         {
-//             season: 1,
-//             episode: 1,
-//             title: "Uno",
-//         },
-//         {
-//             season: 1,
-//             episode: 2,
-//             title: "Duo",
-//         },
-//     ],
-//     status: "personal status - watching/completed",
-//     progress: "if not completed status, 'S1 EP2 episodeTitle'",
-//     rating: 10,
-// }
 
 
+// MOVIES
+export interface MovieItem {
+    id?: string;
+    title: string;
+    imgUrl: string;
+    year: number;
+    director: string;
+    status: string;
+    rating: number;
+}
+
+
+
+// firebase auth context
 export interface AuthContextType {
     user: User | null;
     loading: boolean;
