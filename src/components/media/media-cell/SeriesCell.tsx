@@ -122,7 +122,7 @@ const SeriesCell = ({
                     <MediaStatusBtn
                         disabled={!user}
                         currentStatus={labelStatus}
-                        options={["Reading", "Completed", "On Hold", "Dropped", "Plan to Read"]}
+                        options={["Watching", "Completed", "On Hold", "Dropped", "Plan to Watch"]}
                         onSelect={(newStatus) => user && setLabelStatus(newStatus)}
                     />
                 </div>
@@ -139,7 +139,7 @@ const SeriesCell = ({
                 {user && (
                 <button
                     className="px-5 py-2 bg-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
-                    onClick={() => console.log("handleShowEditSeriesForm")}
+                    onClick={handleShowEditSeriesForm}
                 >
                     Edit
                 </button>
@@ -170,13 +170,7 @@ const SeriesCell = ({
                         <MediaStatusBtn
                             disabled={!user}
                             currentStatus={labelStatus}
-                            options={[
-                                "Watching",
-                                "Completed",
-                                "On Hold",
-                                "Dropped",
-                                "Plan to Watch",
-                            ]}
+                            options={["Watching", "Completed", "On Hold", "Dropped", "Plan to Watch"]}
                             onSelect={(newStatus) =>
                                 user && setLabelStatus(newStatus)
                             }
