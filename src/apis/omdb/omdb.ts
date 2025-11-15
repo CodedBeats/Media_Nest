@@ -1,5 +1,5 @@
 interface OMDBMovieData {
-    title: number;
+    title: string;
     year: number;
     director: string;
     imgUrl: string;
