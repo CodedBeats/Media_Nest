@@ -1,8 +1,9 @@
 // apis
 import { getTvMazeShowData, getTvMazeShowEpisodes } from "../apis/tvmaze/tvmaze";
+import { getOMDBMovieData } from "../apis/omdb/omdb";
 
 // interface
-import type { SeriesItem } from "./interfaces";
+import type { SeriesItem, MovieItem } from "./interfaces";
 
 
 export const fetchShowData = async (showName: string): Promise<SeriesItem | null> => {
@@ -12,7 +13,7 @@ export const fetchShowData = async (showName: string): Promise<SeriesItem | null
         const fetchedShowData = await getTvMazeShowData(showName);
         const fetchedShowEpisodes = await getTvMazeShowEpisodes(fetchedShowData?.tvMazeID || 0);
 
-        const showDataBase = {
+        const showDataFoundation = {
             tvMazeID: fetchedShowData?.tvMazeID,
             title: fetchedShowData?.showName,
             imgUrl: fetchedShowData?.imgUrl,
@@ -22,11 +23,38 @@ export const fetchShowData = async (showName: string): Promise<SeriesItem | null
             rating: 0,
         }
 
-        console.log(showDataBase)
+        console.log(showDataFoundation)
 
-        return showDataBase
+        return showDataFoundation
     } catch (err) {
         console.error("Error fetching show:", err);
         return null;
     }
 };
+
+
+// fetch movie data
+export const fetchMovieData = async (movieName: string): Promise<MovieItem | null> => {
+    try {
+        if (!movieName.trim()) throw new Error("Empty show name");
+
+        const fetchedMovieData = await getOMDBMovieData(movieName)
+
+        const movieDataFoundation = {
+            title: fetchedMovieData.title,
+            imgUrl: fetchedMovieData.imgUrl,
+            year: fetchedMovieData.year,
+            director: fetchedMovieData.director,
+            status: "Status: None",
+            rating: 0
+        }
+
+        console.log(movieDataFoundation)
+
+        return movieDataFoundation
+
+    } catch (err) {
+        console.error("Error fetching show:", err);
+        return null;
+    }
+}
