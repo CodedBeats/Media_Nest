@@ -7,7 +7,7 @@ import { updateSeriesItemByID } from "../../../apis/firebase/firestore";
 // context
 import { useAuth } from "../../../hooks/useFirebaseAuth";
 // utility
-import { formatSeriesProgress } from "../../../utility/manipulateStr";
+import { extractSeriesProgress } from "../../../utility/manipulateStr";
 
 
 const SeriesCell = ({
@@ -47,7 +47,7 @@ const SeriesCell = ({
 
     // init formatted progress
     useEffect(() => {
-        const {seasonNum, episodeNum, episdoeName} = formatSeriesProgress(progress)
+        const {seasonNum, episodeNum, episdoeName} = extractSeriesProgress(progress)
         setProgressSeasonNum(seasonNum)
         setProgressEpisdoeNum(episodeNum)
         setProgressEpisdoeName(episdoeName)

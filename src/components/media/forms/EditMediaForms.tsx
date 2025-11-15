@@ -314,7 +314,7 @@ export const EditSeriesForm = ({
         <div className="bg-[#1f1f1f] rounded-2xl shadow-xl p-6 sm:p-10 w-full flex flex-col gap-6 text-white">
             {/* header */}
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl sm:text-3xl font-bold text-[#D69500]">Add New TV Show</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#D69500]">Edit TV Show</h2>
                 <button
                     className="px-3 py-1 sm:px-4 sm:py-2 bg-blue-700 rounded-lg hover:bg-blue-600 transition text-sm"
                     onClick={closeForm}
@@ -350,13 +350,28 @@ export const EditSeriesForm = ({
                 <div className="flex flex-col gap-2 mt-4">
                     <label className="text-[#D69500] text-xl font-semibold">Season & Episode Progress</label>
 
-                    <div className="grid w-full grid-cols-3">
+                    <div className="grid w-full grid-cols-2 sm:grid-cols-3 gap-x-3 sm:gap-0">
                         {/* season label */}
-                        <p>Select Season</p>
+                        <p 
+                            className="col-start-1 row-start-1
+                            pb-2"
+                        >
+                            Select Season
+                        </p>
                         {/* episode label */}
-                        <p>Select Episode</p>
+                        <p 
+                            className="col-start-2 row-start-1
+                            pb-2"
+                        >
+                            Select Episode
+                        </p>
                         {/* episode title label */}
-                        <p>Episdoe Title</p>
+                        <p 
+                            className="col-start-1 sm:col-start-3 col-end-3 sm:col-end-4 row-start-3 sm:row-start-1
+                            pt-4 sm:pt-0"
+                        >
+                            Episdoe Title
+                        </p>
 
                         {/* season dropdown */}
                         <CustomDropdown 
@@ -377,7 +392,10 @@ export const EditSeriesForm = ({
                             onSelect={(newVal) => setEpisodeProgress(newVal)}
                         />
                         {/* episode title */}
-                        <label className="text-[#23d33b] text-xl font-semibold">
+                        <label 
+                            className="text-[#23d33b] text-xl font-semibold
+                            col-start-1 sm:col-start-3 col-end-3 sm:col-end-4 row-start-4 sm:row-start-2"
+                        >
                             {episodeTitle || "Select an episode"}
                         </label>
                     </div>
