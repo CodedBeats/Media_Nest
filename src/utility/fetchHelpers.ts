@@ -6,7 +6,7 @@ import { getOMDBMovieData } from "../apis/omdb/omdb";
 import type { SeriesItem, MovieItem } from "./interfaces";
 
 
-export const fetchShowData = async (showName: string): Promise<SeriesItem | null> => {
+export const fetchShowDataAPI = async (showName: string): Promise<SeriesItem | null> => {
     try {
         if (!showName.trim()) throw new Error("Empty show name");
 
@@ -34,7 +34,7 @@ export const fetchShowData = async (showName: string): Promise<SeriesItem | null
 
 
 // fetch movie data
-export const fetchMovieData = async (movieName: string): Promise<MovieItem | null> => {
+export const fetchMovieDataAPI = async (movieName: string): Promise<MovieItem | null> => {
     try {
         if (!movieName.trim()) throw new Error("Empty show name");
 
