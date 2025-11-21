@@ -172,6 +172,7 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
 };
 
 
+
 // add tv series form
 export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
     // state
