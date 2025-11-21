@@ -1,5 +1,5 @@
 // dependencies
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // components
 import MangaCell from "../components/media/media-cell/MangaCell";
@@ -19,8 +19,8 @@ const Manga = () => {
     const { user } = useAuth();
 
     // state
-    // fetch manga from firebase with custom hook
-    const { mangaItems, isLoading, error, refetch } = useFecthAllMangaItems();
+    // fetch manga from firebase with custom query hook
+    const { data: mangaItems = [], isLoading, error, refetch } = useFecthAllMangaItems();
     const [ratingFilterState, setRatingFilterState] = useState<"Asc" | "Dsc">("Dsc");
     const [statusFilterState, setStatusFilterState] = useState<string>("None");
     const [searchQuery, setSearchQuery] = useState<string>("");
@@ -32,11 +32,11 @@ const Manga = () => {
 
     // derived filtered list
     const filteredMangaItems = useMemo(() => {
-        let items = [...mangaItems];
+        let items = [...mangaItems]
 
         // apply search filter
         if (searchQuery.trim()) {
-            const q = searchQuery.trim().toLowerCase();
+            const q = searchQuery.trim().toLowerCase()
             items = items.filter((item) =>
                 item.title.toLowerCase().includes(q)
             );
@@ -53,12 +53,15 @@ const Manga = () => {
         } else {
             items.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
         }
-
-        // reset visible count
-        setVisibleCount(LOAD_STEP)
         
         return items;
     }, [mangaItems, ratingFilterState, statusFilterState, searchQuery]);
+    
+
+    useEffect(() => {
+        // reset visible count
+        setVisibleCount(LOAD_STEP)
+    }, [ratingFilterState, statusFilterState, searchQuery])
 
 
     // handle load more

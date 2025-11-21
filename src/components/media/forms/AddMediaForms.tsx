@@ -1,22 +1,26 @@
 // dependencies
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 
 // components
-import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
-import { CustomInput, CustomDropdown } from "../../common/FormFields";
+import { MediaStatusBtn } from "../../btns/MediaStatusBtn"
+import { CustomInput, CustomDropdown } from "../../common/FormFields"
 
 // api
-import { createMangaItem, createMovieItem, createSeriesItem } from "../../../apis/firebase/firestore";
+import { createMangaItem, createMovieItem, createSeriesItem } from "../../../apis/firebase/firestore"
 
 // utility
-import { type MangaItem, type MovieItem, type SeriesItem } from "../../../utility/interfaces";
-import { checkEmptyInput } from "../../../utility/manipulateStr";
-import { fetchMovieDataAPI, fetchShowDataAPI } from "../../../utility/fetchHelpers";
+import { type MangaItem, type MovieItem, type SeriesItem } from "../../../utility/interfaces"
+import { checkEmptyInput } from "../../../utility/manipulateStr"
+import { fetchMovieDataAPI, fetchShowDataAPI } from "../../../utility/fetchHelpers"
 
 
 
 // add manga form
 export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
+    // react query
+    const queryClient = useQueryClient();
+
     // state
     const [formData, setFormData] = useState<MangaItem>({
         mangadexID: "",
@@ -65,6 +69,9 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
             imgUrl: "",
         });
         setStatusLabelState("Status: None");
+
+        // background refetch
+        queryClient.invalidateQueries({ queryKey: ["mangaItems"] });
     };
 
     return (
@@ -175,6 +182,9 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
 
 // add tv series form
 export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
+    // react query
+    const queryClient = useQueryClient();
+
     // state
     const [formData, setFormData] = useState<SeriesItem>({
         tvMazeID: 0,
@@ -269,6 +279,10 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
                 seriesEpisodeDetails: [],
             });
             setStatusLabelState("Status: None")
+
+            // background refetch
+            queryClient.invalidateQueries({ queryKey: ["seriesItems"] })
+
         } catch (error) {
             console.error("Failed to add Series:", error)
         }
@@ -423,6 +437,9 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
 
 // add tv movie form
 export const AddMovieForm = ({ closeForm }: { closeForm: () => void }) => {
+    // react query
+    const queryClient = useQueryClient();
+
     // state
     const [formData, setFormData] = useState<MovieItem>({
         title: "",
@@ -478,6 +495,9 @@ export const AddMovieForm = ({ closeForm }: { closeForm: () => void }) => {
                 rating: 0
             });
             setStatusLabelState("Status: None")
+
+            // background refetch
+            queryClient.invalidateQueries({ queryKey: ["movieItems"] });
 
         } catch (error) {
             console.error("Failed to add Series:", error)

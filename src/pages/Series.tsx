@@ -1,5 +1,5 @@
 // dependencies
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // components
 import Search from "../components/common/Search";
@@ -16,7 +16,7 @@ const Series = () => {
     // context
     const { user } = useAuth();
     // fetch manga from firebase with custom hook
-    const { seriesItems, isLoading, error, refetch } = useFetchAllSeriesItems();
+    const { data: seriesItems = [], isLoading, error, refetch } = useFetchAllSeriesItems();
 
     // state
     const [showAddSeriesForm, setShowAddSeriesForm] = useState<boolean>(false);
@@ -51,12 +51,15 @@ const Series = () => {
         } else {
             items.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
         }
-
-        // reset visible count
-        setVisibleCount(LOAD_STEP)
         
         return items;
     }, [seriesItems, ratingFilterState, statusFilterState, searchQuery]);
+
+    
+    useEffect(() => {
+        // reset visible count
+        setVisibleCount(LOAD_STEP)
+    }, [ratingFilterState, statusFilterState, searchQuery])
 
 
     // handle load more

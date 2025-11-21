@@ -1,5 +1,6 @@
 // dependencies
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query"
 
 // components
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
@@ -34,6 +35,9 @@ export const EditMangaForm = ({
     imgUrl: string;
     closeForm: () => void;
 }) => {
+    // react query
+    const queryClient = useQueryClient();
+
     // state
     const [formData, setFormData] = useState<MangaItem>({
         mangadexID: mangadexID,
@@ -66,6 +70,9 @@ export const EditMangaForm = ({
         // edit manga item
         updateMangaItemByID(id, formData);
         console.log("edited manga item:", formData);
+
+        // background refetch
+        queryClient.invalidateQueries({ queryKey: ["mangaItems"] })
 
         // close form
         closeForm();
@@ -202,6 +209,9 @@ export const EditSeriesForm = ({
     rating: number;
     closeForm: () => void 
 }) => {
+    // react query
+    const queryClient = useQueryClient();
+    
     // state
     const [formData, setFormData] = useState<SeriesItem>({
         id: id,
@@ -301,6 +311,8 @@ export const EditSeriesForm = ({
             await updateSeriesItemByID(id, newSeriesItem)
             console.log("Series updated successfully")
 
+            // background refetch
+            queryClient.invalidateQueries({ queryKey: ["seriesItems"] })
             
             // close form
             closeForm();
@@ -467,6 +479,9 @@ export const EditMovieForm = ({
     rating: number;
     closeForm: () => void 
 }) => {
+    // react query
+    const queryClient = useQueryClient();
+    
     // state
     const [formData, setFormData] = useState<MovieItem>({
         title: title,
@@ -507,6 +522,8 @@ export const EditMovieForm = ({
             await updateMovieItemByID(id, updatedMovieItem)
             console.log("movie updated successfully")
 
+            // background refetch
+            queryClient.invalidateQueries({ queryKey: ["movieItems"] })
             
             // close form
             closeForm();
