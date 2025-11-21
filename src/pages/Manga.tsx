@@ -145,7 +145,7 @@ const Manga = () => {
                 </div>
 
                 {/* filter */}
-                <div className="flex justify-center items-center w-full h-full">
+                <div className="flex flex-col gap-2 justify-center items-center w-full h-full">
                     <div className="flex flex-row items-center justify-center gap-8 md:gap-10 text-center">
                         <div className="flex items-center justify-center gap-2">
                             <p className="text-white font-semibold text-sm sm:text-base whitespace-nowrap">
@@ -174,14 +174,16 @@ const Manga = () => {
                             </button>
                         </div>
                     </div>
+                    {filteredMangaItems.length === 0 ? (
+                        <p className="text-gray-500 text-center">No manga found</p>
+                    ): (
+                        <p className="text-gray-500 text-center">{filteredMangaItems.length} manga found</p>
+                    )}
                 </div>
             </div>
 
             {/* manga list */}
             <div className="flex flex-col items-center justify-center w-full mt-6 px-3 gap-4 md:gap-0">
-                {filteredMangaItems.length === 0 && (
-                    <p className="text-gray-500 text-center">No manga found.</p>
-                )}
                 {visibleManga.map((manga) => (
                     <MangaCell key={manga.id} {...manga} />
                 ))}
