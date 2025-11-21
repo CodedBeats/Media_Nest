@@ -80,7 +80,7 @@ export const CustomDropdown = ({
                 </svg>
             </button>
             {isOpen && (
-                <div className="absolute right-0 mt-1 w-full sm:w-40 bg-white border border-gray-300 rounded shadow-lg z-10">
+                <div className="absolute right-0 mt-1 w-full max-h-50 overflow-y-auto sm:w-40 bg-white border border-gray-300 rounded shadow-lg z-10">
                     {options.map((option) => (
                         <div
                             key={option}

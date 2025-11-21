@@ -144,7 +144,7 @@ const Series = () => {
                 </div>
 
                 {/* filter */}
-                <div className="flex justify-center items-center w-full h-full">
+                <div className="flex flex-col gap-2 justify-center items-center w-full h-full">
                     <div className="flex flex-row items-center justify-center gap-8 md:gap-10 text-center">
                         <div className="flex items-center justify-center gap-2">
                             <p className="text-white font-semibold text-sm sm:text-base whitespace-nowrap">
@@ -173,14 +173,16 @@ const Series = () => {
                             </button>
                         </div>
                     </div>
+                    {filteredSeriesItems.length === 0 ? (
+                        <p className="text-gray-500 text-center">No series found</p>
+                    ): (
+                        <p className="text-gray-500 text-center">{filteredSeriesItems.length} series found</p>
+                    )}
                 </div>
             </div>
 
             {/* manga list */}
             <div className="flex flex-col items-center justify-center w-full mt-6 px-3 gap-4 md:gap-0">
-                {filteredSeriesItems.length === 0 && (
-                    <p className="text-gray-500 text-center">No manga found.</p>
-                )}
                 {visibleSeries.map((series) => (
                     <SeriesCell key={series.id} {...series} />
                 ))}
