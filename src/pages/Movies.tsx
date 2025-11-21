@@ -1,5 +1,5 @@
 // dependencies
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // components
 import Search from "../components/common/Search";
@@ -16,7 +16,7 @@ const Movies = () => {
     // context
     const { user } = useAuth();
     // fetch manga from firebase with custom hook
-    const { movieItems, isLoading, error, refetch } = useFetchAllMovieItems();
+    const { data: movieItems = [], isLoading, error, refetch } = useFetchAllMovieItems();
 
     // state
     const [showAddMovieForm, setShowAddMovieForm] = useState<boolean>(false);
@@ -51,12 +51,15 @@ const Movies = () => {
         } else {
             items.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
         }
-
-        // reset visible count
-        setVisibleCount(LOAD_STEP)
         
         return items;
     }, [movieItems, ratingFilterState, statusFilterState, searchQuery]);
+
+
+    useEffect(() => {
+        // reset visible count
+        setVisibleCount(LOAD_STEP)
+    }, [ratingFilterState, statusFilterState, searchQuery])
 
 
     // handle load more
