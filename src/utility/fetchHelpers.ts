@@ -1,11 +1,13 @@
 // apis
 import { getTvMazeShowData, getTvMazeShowEpisodes } from "../apis/tvmaze/tvmaze";
 import { getOMDBMovieData } from "../apis/omdb/omdb";
+import { fetchAllMangaItems } from "../apis/firebase/firestore";
 
 // interface
 import type { SeriesItem, MovieItem } from "./interfaces";
 
 
+// fetch tv series data
 export const fetchShowDataAPI = async (showName: string): Promise<SeriesItem | null> => {
     try {
         if (!showName.trim()) throw new Error("Empty show name");
@@ -57,4 +59,33 @@ export const fetchMovieDataAPI = async (movieName: string): Promise<MovieItem | 
         console.error("Error fetching show:", err);
         return null;
     }
+}
+
+
+// fetch manga data
+export const fetchAllMangaItemsEnriched = async () => {
+    const data = await fetchAllMangaItems()
+
+    return Promise.all(
+        data.map(async (manga) => {
+            // priority 1 - existing URL
+            if (manga.imgUrl) {
+                return { ...manga, coverUrl: manga.imgUrl }
+            }
+
+            // priority 2 - mangadex ID
+            if (manga.mangadexID) {
+                try {
+                    console.log("mangadexID:", manga.mangadexID)
+                    return { ...manga, coverUrl: manga.imgUrl || "/fallback-cover.png" }
+                } catch (err) {
+                    console.error(`Failed to fetch cover:`, err)
+                    return { ...manga, coverUrl: "/fallback-cover.png" }
+                }
+            }
+
+            // fallback
+            return { ...manga, coverUrl: "/fallback-cover.png" }
+        })
+    )
 }
