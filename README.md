@@ -25,9 +25,9 @@ To run your own instance, you’ll need:
 ### Tracking
 Supports tailored tracking for each media type:
 
-- **Manga** — progress by chapters  
-- **Movies** — tracked by status  
-- **Series** — progress by seasons and episodes  
+- **Manga** - progress by chapters  
+- **Movies** - tracked by status  
+- **Series** - progress by seasons and episodes  
 
 ### Filtering & Search
 - Filter by **status**:  
