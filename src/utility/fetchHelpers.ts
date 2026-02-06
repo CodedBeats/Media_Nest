@@ -8,28 +8,28 @@ import type { SeriesItem, MovieItem } from "./interfaces";
 
 
 // fetch tv series data
-export const fetchShowDataAPI = async (showName: string): Promise<SeriesItem | null> => {
+export const fetchSeriesDataAPI = async (seriesName: string): Promise<SeriesItem | null> => {
     try {
-        if (!showName.trim()) throw new Error("Empty show name");
+        if (!seriesName.trim()) throw new Error("Empty series name");
 
-        const fetchedShowData = await getTvMazeShowData(showName);
-        const fetchedShowEpisodes = await getTvMazeShowEpisodes(fetchedShowData?.tvMazeID || 0);
+        const fetchedSeriesData = await getTvMazeShowData(seriesName);
+        const fetchedSeriesEpisodes = await getTvMazeShowEpisodes(fetchedSeriesData?.tvMazeID || 0);
 
-        const showDataFoundation = {
-            tvMazeID: fetchedShowData?.tvMazeID,
-            title: fetchedShowData?.showName,
-            imgUrl: fetchedShowData?.imgUrl,
-            seriesEpisodeDetails: fetchedShowEpisodes ?? [],
+        const seriesDataFoundation = {
+            tvMazeID: fetchedSeriesData?.tvMazeID,
+            title: fetchedSeriesData?.showName,
+            imgUrl: fetchedSeriesData?.imgUrl,
+            seriesEpisodeDetails: fetchedSeriesEpisodes ?? [],
             status: "none",
             progress: "S0 EP0 episodeTitle",
             rating: 0,
         }
 
-        console.log(showDataFoundation)
+        console.log(seriesDataFoundation)
 
-        return showDataFoundation
+        return seriesDataFoundation
     } catch (err) {
-        console.error("Error fetching show:", err);
+        console.error("Error fetching series:", err);
         return null;
     }
 };
@@ -38,7 +38,7 @@ export const fetchShowDataAPI = async (showName: string): Promise<SeriesItem | n
 // fetch movie data
 export const fetchMovieDataAPI = async (movieName: string): Promise<MovieItem | null> => {
     try {
-        if (!movieName.trim()) throw new Error("Empty show name");
+        if (!movieName.trim()) throw new Error("Empty movie name");
 
         const fetchedMovieData = await getOMDBMovieData(movieName)
 
@@ -56,7 +56,7 @@ export const fetchMovieDataAPI = async (movieName: string): Promise<MovieItem | 
         return movieDataFoundation
 
     } catch (err) {
-        console.error("Error fetching show:", err);
+        console.error("Error fetching movie:", err);
         return null;
     }
 }
