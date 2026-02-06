@@ -1,9 +1,11 @@
-// components
+// dependencies
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+// components
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 import { EditMangaForm } from "../forms/EditMediaForms";
 // api
-import { updateMangaItemByID } from "../../../apis/firebase/firestore";
+import { deleteMediaItemByID, updateMangaItemByID } from "../../../apis/firebase/firestore";
 // context
 import { useAuth } from "../../../hooks/useFirebaseAuth";
 
@@ -22,12 +24,14 @@ const MangaCell = ({
     mangadexID?: string;
     //coverUrl?: string;
     imgUrl?: string;
-    title?: string;
+    title: string;
     author?: string;
     progress?: string;
     status?: string;
     rating?: number;
 }) => {
+    // react query
+    const queryClient = useQueryClient();
     // context
     const { user } = useAuth();
 
@@ -45,11 +49,31 @@ const MangaCell = ({
             .then(() => {
                 console.log("Manga status updated successfully");
                 setOriginalStatus(labelStatus); // update original status to new status
+                // background refetch
+                queryClient.invalidateQueries({ queryKey: ["mangaItems"] })
             })
             .catch((error) => {
                 console.error("Error updating manga status: ", error);
             });
     };
+        
+    // delete manga
+    const handleDeleteManga = (mangaName: string) => {
+        const confirmDelete = confirm(`Delete "${mangaName}" ?`)
+        
+        // delete manga with firebase api call
+        if (confirmDelete) {
+            deleteMediaItemByID(id || "", "manga")
+                .then(() => {
+                    console.log("Manga deleted successfully")
+                    // background refetch
+                    queryClient.invalidateQueries({ queryKey: ["mangaItems"] })
+                })
+                .catch((error) => {
+                    console.error("Error deleting manga: ", error)
+                });
+        }
+    }
 
     // show and hide edit manga form
     const handleShowEditMangaForm = () => {
@@ -114,12 +138,20 @@ const MangaCell = ({
                 )}
 
                 {user && (
-                <button
-                    className="px-5 py-2 bg-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
-                    onClick={handleShowEditMangaForm}
-                >
-                    Edit
-                </button>
+                <div className="flex gap-5 w-full">
+                    <button
+                        className="px-5 py-2 bg-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
+                        onClick={handleShowEditMangaForm}
+                    >
+                        Edit
+                    </button>
+                    <button
+                        className="px-5 py-2 bg-red-800 text-white rounded-md hover:bg-[#ba3333] transition text-sm w-[100%]"
+                        onClick={() => handleDeleteManga(title)}
+                    >
+                        Delete
+                    </button>
+                </div>
                 )}
             </div>
 
@@ -174,14 +206,22 @@ const MangaCell = ({
                         </p>
                     </div>
 
-                    <div className="align-bottom">
+                    <div className="align-bottom flex grow-0">
                         {user && (
+                        <div className="flex gap-5">
                             <button
-                                className="px-8 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition text-sm"
+                                className="px-5 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition text-sm"
                                 onClick={handleShowEditMangaForm}
                             >
                                 Edit
                             </button>
+                            <button
+                                className="px-5 py-2 bg-red-800 text-white rounded-md hover:bg-[#ba3333] transition text-sm w-[100%]"
+                                onClick={() => handleDeleteManga(title)}
+                            >
+                                Delete
+                            </button>
+                        </div>
                         )}
                     </div>
                 </div>

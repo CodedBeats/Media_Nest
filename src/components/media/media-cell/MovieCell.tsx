@@ -1,9 +1,11 @@
-// components
+// dependencies
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+// components
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 import { EditMovieForm } from "../forms/EditMediaForms";
 // api
-import { updateMovieItemByID } from "../../../apis/firebase/firestore";
+import { deleteMediaItemByID, updateMovieItemByID } from "../../../apis/firebase/firestore";
 // context
 import { useAuth } from "../../../hooks/useFirebaseAuth";
 
@@ -25,6 +27,8 @@ const MovieCell = ({
     status: string;
     rating: number;
 }) => {
+    // react query
+    const queryClient = useQueryClient();
     // context
     const { user } = useAuth();
 
@@ -43,11 +47,31 @@ const MovieCell = ({
             .then(() => {
                 console.log("Movie status updated successfully");
                 setOriginalStatus(labelStatus); // update original status to new status
+                // background refetch
+                queryClient.invalidateQueries({ queryKey: ["movieItems"] })
             })
             .catch((error) => {
                 console.error("Error updating movie status: ", error);
             });
     };
+    
+    // delete movie
+    const handleDeleteMovie = (movieName: string) => {
+        const confirmDelete = confirm(`Delete "${movieName}" ?`)
+        
+        // delete movie with firebase api call
+        if (confirmDelete) {
+            deleteMediaItemByID(id || "", "movies")
+                .then(() => {
+                    console.log("Movie deleted successfully")
+                    // background refetch
+                    queryClient.invalidateQueries({ queryKey: ["movieItems"] })
+                })
+                .catch((error) => {
+                    console.error("Error deleting movie: ", error)
+                });
+        }
+    }
 
     // show and hide edit movie form
     const handleShowEditMovieForm = () => {
@@ -116,12 +140,20 @@ const MovieCell = ({
                 )}
 
                 {user && (
-                <button
-                    className="px-5 py-2 bg-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
-                    onClick={handleShowEditMovieForm}
-                >
-                    Edit
-                </button>
+                <div className="flex gap-5 w-full">
+                    <button
+                        className="px-5 py-2 bg-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
+                        onClick={handleShowEditMovieForm}
+                    >
+                        Edit
+                    </button>
+                    <button
+                        className="px-5 py-2 bg-red-800 text-white rounded-md hover:bg-[#ba3333] transition text-sm w-[100%]"
+                        onClick={() => handleDeleteMovie(title)}
+                    >
+                        Delete
+                    </button>
+                </div>
                 )}
             </div>
 
@@ -172,14 +204,22 @@ const MovieCell = ({
                         </div>
                     </div>
 
-                    <div className="align-bottom">
+                    <div className="align-bottom flex grow-0">
                         {user && (
+                        <div className="flex gap-5">
                             <button
-                                className="px-8 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition text-sm"
+                                className="px-5 py-2 bg-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
                                 onClick={handleShowEditMovieForm}
                             >
                                 Edit
                             </button>
+                            <button
+                                className="px-5 py-2 bg-red-800 text-white rounded-md hover:bg-[#ba3333] transition text-sm w-[100%]"
+                                onClick={() => handleDeleteMovie(title)}
+                            >
+                                Delete
+                            </button>
+                        </div>
                         )}
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 // firebase config
 import { db } from "./firebaseConfig";
 // dependencies
-import { addDoc, collection, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, updateDoc, deleteDoc } from "firebase/firestore";
 
 // utility
 import { type MangaItem, type MovieItem, type SeriesItem } from "../../utility/interfaces";
@@ -132,6 +132,16 @@ export const updateMovieItemByID = async (movieID: string, updatedMovieData: obj
 
 
 // === DELETE === //
+export const deleteMediaItemByID = async (mediaID: string, mediaCollection: string): Promise<void> => {
+    const docRef = doc(db, mediaCollection, mediaID)
+
+    try {
+        await deleteDoc(docRef)
+    } catch (e) {
+        console.error("error deleting document: ", e);
+        throw e;
+    }
+}
 
 
 

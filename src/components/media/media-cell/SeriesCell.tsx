@@ -1,9 +1,11 @@
-// components
+// dependencies
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+// components
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 import { EditSeriesForm } from "../forms/EditMediaForms";
 // api
-import { updateSeriesItemByID } from "../../../apis/firebase/firestore";
+import { updateSeriesItemByID, deleteMediaItemByID } from "../../../apis/firebase/firestore";
 // context
 import { useAuth } from "../../../hooks/useFirebaseAuth";
 // utility
@@ -33,6 +35,8 @@ const SeriesCell = ({
     progress: string;
     rating: number;
 }) => {
+    // react query
+    const queryClient = useQueryClient();
     // context
     const { user } = useAuth();
 
@@ -64,11 +68,31 @@ const SeriesCell = ({
             .then(() => {
                 console.log("Series status updated successfully");
                 setOriginalStatus(labelStatus); // update original status to new status
+                // background refetch
+                queryClient.invalidateQueries({ queryKey: ["seriesItems"] })
             })
             .catch((error) => {
                 console.error("Error updating series status: ", error);
             });
     };
+
+    // delete series
+    const handleDeleteSeries = (seriesName: string) => {
+        const confirmDelete = confirm(`Delete "${seriesName}" ?`)
+        
+        // delete series with firebase api call
+        if (confirmDelete) {
+            deleteMediaItemByID(id || "", "series")
+                .then(() => {
+                    console.log("Series deleted successfully")
+                    // background refetch
+                    queryClient.invalidateQueries({ queryKey: ["seriesItems"] })
+                })
+                .catch((error) => {
+                    console.error("Error deleting series: ", error)
+                });
+        }
+    }
 
     // show and hide edit series form
     const handleShowEditSeriesForm = () => {
@@ -137,12 +161,20 @@ const SeriesCell = ({
                 )}
 
                 {user && (
-                <button
-                    className="px-5 py-2 bg-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
-                    onClick={handleShowEditSeriesForm}
-                >
-                    Edit
-                </button>
+                <div className="flex gap-5 w-full">
+                    <button
+                        className="px-5 py-2 bg-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
+                        onClick={handleShowEditSeriesForm}
+                    >
+                        Edit
+                    </button>
+                    <button
+                        className="px-5 py-2 bg-red-800 text-white rounded-md hover:bg-[#ba3333] transition text-sm w-[100%]"
+                        onClick={() => handleDeleteSeries(title)}
+                    >
+                        Delete
+                    </button>
+                </div>
                 )}
             </div>
 
@@ -196,14 +228,22 @@ const SeriesCell = ({
                         </div>
                     </div>
 
-                    <div className="align-bottom">
+                    <div className="align-bottom flex grow-0">
                         {user && (
+                        <div className="flex gap-5">
                             <button
-                                className="px-8 py-1 bg-blue-800 text-white rounded hover:bg-[#036AA1] transition text-sm"
+                                className="px-5 py-2 bg-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
                                 onClick={handleShowEditSeriesForm}
                             >
                                 Edit
                             </button>
+                            <button
+                                className="px-5 py-2 bg-red-800 text-white rounded-md hover:bg-[#ba3333] transition text-sm w-[100%]"
+                                onClick={() => handleDeleteSeries(title)}
+                            >
+                                Delete
+                            </button>
+                        </div>
                         )}
                     </div>
                 </div>

@@ -12,7 +12,7 @@ import { createMangaItem, createMovieItem, createSeriesItem } from "../../../api
 // utility
 import { type MangaItem, type MovieItem, type SeriesItem } from "../../../utility/interfaces"
 import { checkEmptyInput } from "../../../utility/manipulateStr"
-import { fetchMovieDataAPI, fetchShowDataAPI } from "../../../utility/fetchHelpers"
+import { fetchMovieDataAPI, fetchSeriesDataAPI } from "../../../utility/fetchHelpers"
 
 
 
@@ -235,7 +235,7 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
 
     // use tv maze api to get data on show
     const grabSeries = async () => {
-        const show = await fetchShowDataAPI(formData.title);
+        const show = await fetchSeriesDataAPI(formData.title);
         if (show) setFormData(show);
     }
 
@@ -524,7 +524,7 @@ export const AddMovieForm = ({ closeForm }: { closeForm: () => void }) => {
                     <CustomInput
                         label="Title"
                         inputType="text"
-                        placeholder="Series Title"
+                        placeholder="Movie Title"
                         value={formData.title}
                         onChange={(e) => {
                             setFormData({ ...formData, title: e.target.value });
