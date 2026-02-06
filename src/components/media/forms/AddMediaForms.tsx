@@ -524,7 +524,7 @@ export const AddMovieForm = ({ closeForm }: { closeForm: () => void }) => {
                     <CustomInput
                         label="Title"
                         inputType="text"
-                        placeholder="Series Title"
+                        placeholder="Movie Title"
                         value={formData.title}
                         onChange={(e) => {
                             setFormData({ ...formData, title: e.target.value });
