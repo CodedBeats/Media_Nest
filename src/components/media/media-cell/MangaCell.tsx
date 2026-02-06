@@ -1,5 +1,7 @@
-// components
+// dependencies
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+// components
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 import { EditMangaForm } from "../forms/EditMediaForms";
 // api
@@ -28,6 +30,8 @@ const MangaCell = ({
     status?: string;
     rating?: number;
 }) => {
+    // react query
+    const queryClient = useQueryClient();
     // context
     const { user } = useAuth();
 
@@ -45,6 +49,8 @@ const MangaCell = ({
             .then(() => {
                 console.log("Manga status updated successfully");
                 setOriginalStatus(labelStatus); // update original status to new status
+                // background refetch
+                queryClient.invalidateQueries({ queryKey: ["mangaItems"] })
             })
             .catch((error) => {
                 console.error("Error updating manga status: ", error);

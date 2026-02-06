@@ -68,6 +68,8 @@ const SeriesCell = ({
             .then(() => {
                 console.log("Series status updated successfully");
                 setOriginalStatus(labelStatus); // update original status to new status
+                // background refetch
+                queryClient.invalidateQueries({ queryKey: ["seriesItems"] })
             })
             .catch((error) => {
                 console.error("Error updating series status: ", error);

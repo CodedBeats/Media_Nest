@@ -1,5 +1,7 @@
-// components
+// dependencies
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+// components
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 import { EditMovieForm } from "../forms/EditMediaForms";
 // api
@@ -25,6 +27,8 @@ const MovieCell = ({
     status: string;
     rating: number;
 }) => {
+    // react query
+    const queryClient = useQueryClient();
     // context
     const { user } = useAuth();
 
@@ -43,6 +47,8 @@ const MovieCell = ({
             .then(() => {
                 console.log("Movie status updated successfully");
                 setOriginalStatus(labelStatus); // update original status to new status
+                // background refetch
+                queryClient.invalidateQueries({ queryKey: ["movieItems"] })
             })
             .catch((error) => {
                 console.error("Error updating movie status: ", error);
