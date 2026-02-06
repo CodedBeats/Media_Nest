@@ -79,7 +79,6 @@ const SeriesCell = ({
     // delete series
     const handleDeleteSeries = (seriesName: string) => {
         const confirmDelete = confirm(`Delete "${seriesName}" ?`)
-        console.log(confirmDelete)
         
         // delete series with firebase api call
         if (confirmDelete) {
@@ -90,7 +89,7 @@ const SeriesCell = ({
                     queryClient.invalidateQueries({ queryKey: ["seriesItems"] })
                 })
                 .catch((error) => {
-                    console.error("Error deleting series status: ", error)
+                    console.error("Error deleting series: ", error)
                 });
         }
     }
