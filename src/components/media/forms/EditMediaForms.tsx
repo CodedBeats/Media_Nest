@@ -625,6 +625,20 @@ export const EditMovieForm = ({
                         });
                     }}
                 />
+
+                {/* Watch Progress Time */}
+                <CustomInput
+                    label="Watch Progress Time"
+                    inputType="text"
+                    placeholder="HH:MM:SS"
+                    value={formData.watchProgressTime || ""}
+                    onChange={(e) => {
+                        setFormData({
+                            ...formData,
+                            watchProgressTime: e.target.value,
+                        });
+                    }}
+                />
             </div>
 
             {/* create series */}
