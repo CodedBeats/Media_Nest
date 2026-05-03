@@ -103,13 +103,13 @@ const Series = () => {
             <div className="overflow-hidden w-full h-[12rem] md:h-[28rem] relative flex items-center justify-center">
                 <img
                     className="w-full h-full object-cover object-center"
-                    src="https://t4.ftcdn.net/jpg/02/16/48/61/360_F_216486141_IIwlsQfsnMzf6Br2yqlU7GTj0u09kWYs.jpg"
+                    src="https://static.posters.cz/image/hp/106300.jpg"
                     alt="Banner"
                 />
                 {/* gradient starts solid at top, begins fade around halfway */}
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black"></div>
                 
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+                <div className="absolute inset-0 flex flex-col items-center sm:justify-center md:justify-end gap-4 md:pb-10">
                     <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-2 pt-12 md:pt-0">
                         Series Tracker
                     </h1>
@@ -184,7 +184,7 @@ const Series = () => {
                 </div>
             </div>
 
-            {/* manga list */}
+            {/* series list */}
             <div className="flex flex-col items-center justify-center w-full mt-6 px-3 gap-4 md:gap-0">
                 {visibleSeries.map((series) => (
                     <SeriesCell key={series.id} {...series} />
