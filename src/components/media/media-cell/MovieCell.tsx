@@ -18,6 +18,7 @@ const MovieCell = ({
     director,
     status,
     rating,
+    watchProgressTime,
 }: {
     id?: string;
     title: string;
@@ -26,6 +27,7 @@ const MovieCell = ({
     director: string;
     status: string;
     rating: number;
+    watchProgressTime: string
 }) => {
     // react query
     const queryClient = useQueryClient();
@@ -87,7 +89,7 @@ const MovieCell = ({
             className="w-full bg-[#1e1e1e] rounded-lg hover:bg-[#2a2a2a] transition 
              px-4 sm:px-8 py-5 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-2 sm:gap-6"
         >
-            {/* MOBILE view (full image + overlay) */}
+            {/* === MOBILE view (full image + overlay) === */}
             <div className="relative w-full h-[60vh] sm:hidden overflow-hidden rounded-lg">
                 <img
                     src={imgUrl}
@@ -121,13 +123,14 @@ const MovieCell = ({
             </div>
             {/* actions below img */}
             <div className="sm:hidden flex flex-col items-center justify-center gap-3 w-[100%]">
-                <div className="w-full max-w-[400px]">
+                <div className="w-full max-w-[400px] flex flex-col items-center justify-center gap-3 text-center">
                     <MediaStatusBtn
                         disabled={!user}
                         currentStatus={labelStatus}
                         options={["Watching", "Completed", "On Hold", "Dropped", "Plan to Watch"]}
                         onSelect={(newStatus) => user && setLabelStatus(newStatus)}
                     />
+                    { labelStatus === "Watching" && <p className="text-gray-400 text-sm mt-2">{watchProgressTime}</p> }
                 </div>
 
                 {labelStatus !== originalStatus && (
@@ -158,7 +161,7 @@ const MovieCell = ({
             </div>
 
 
-            {/* DESKTOP view */}
+            {/* === DESKTOP view === */}
             <div className="hidden sm:flex items-center sm:items-start justify-between gap-4 sm:gap-6 w-full">
                 {/* cover */}
                 <div className="w-32 h-48 md:w-22 md:h-30 flex-shrink-0">
@@ -178,14 +181,21 @@ const MovieCell = ({
                     </div>
 
                     <div className="flex flex-col sm:flex-row items-center justify-start gap-3 sm:gap-6">
-                        <MediaStatusBtn
-                            disabled={!user}
-                            currentStatus={labelStatus}
-                            options={["Watching", "Completed", "On Hold", "Dropped", "Plan to Watch"]}
-                            onSelect={(newStatus) =>
-                                user && setLabelStatus(newStatus)
-                            }
-                        />
+                        <div className="flex flex-col items-start justify-start gap-2">
+                            {/* status btn */}
+                            <MediaStatusBtn
+                                disabled={!user}
+                                currentStatus={labelStatus}
+                                options={["Watching", "Completed", "On Hold", "Dropped", "Plan to Watch"]}
+                                onSelect={(newStatus) =>
+                                    user && setLabelStatus(newStatus)
+                                }
+                            />
+                            {/* watch progress time */}
+                            { labelStatus === "Watching" && <p className="text-gray-400 text-sm mt-2">{watchProgressTime}</p> }
+                        </div>
+                        
+                        {/* update status btn */}
                         {labelStatus !== originalStatus && (
                             <button
                                 className="px-3 py-1 bg-green-900 text-white rounded hover:bg-green-700 transition text-sm"
@@ -194,6 +204,7 @@ const MovieCell = ({
                                 Update Status
                             </button>
                         )}
+                        {/* movie info */}
                         <div className="flex gap-4">
                             <p className="text-gray-400 text-sm mt-2">
                                 {year}
@@ -204,6 +215,7 @@ const MovieCell = ({
                         </div>
                     </div>
 
+                    {/* edit and delete btns */}
                     <div className="align-bottom flex grow-0">
                         {user && (
                         <div className="flex gap-5">
