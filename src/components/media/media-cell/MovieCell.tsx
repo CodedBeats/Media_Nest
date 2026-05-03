@@ -135,7 +135,7 @@ const MovieCell = ({
 
                 {labelStatus !== originalStatus && (
                 <button
-                    className="px-5 py-2 bg-green-900 text-white rounded-md hover:bg-green-700 transition text-sm w-[100%]"
+                    className="px-5 py-2 border border-green-900 text-white rounded-md hover:bg-green-700 transition text-sm w-[100%]"
                     onClick={handleUpdateMovieStatus}
                 >
                     Update Status
@@ -145,13 +145,13 @@ const MovieCell = ({
                 {user && (
                 <div className="flex gap-5 w-full">
                     <button
-                        className="px-5 py-2 bg-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
+                        className="px-5 py-2 border border-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
                         onClick={handleShowEditMovieForm}
                     >
                         Edit
                     </button>
                     <button
-                        className="px-5 py-2 bg-red-800 text-white rounded-md hover:bg-[#ba3333] transition text-sm w-[100%]"
+                        className="px-5 py-2 border border-red-800 text-white rounded-md hover:bg-[#ba3333] transition text-sm w-[100%]"
                         onClick={() => handleDeleteMovie(title)}
                     >
                         Delete
@@ -198,7 +198,7 @@ const MovieCell = ({
                         {/* update status btn */}
                         {labelStatus !== originalStatus && (
                             <button
-                                className="px-3 py-1 bg-green-900 text-white rounded hover:bg-green-700 transition text-sm"
+                                className="px-3 py-1 border border-green-900 text-white rounded hover:bg-green-700 transition text-sm"
                                 onClick={handleUpdateMovieStatus}
                             >
                                 Update Status
@@ -220,13 +220,13 @@ const MovieCell = ({
                         {user && (
                         <div className="flex gap-5">
                             <button
-                                className="px-5 py-2 bg-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
+                                className="px-5 py-2 border border-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
                                 onClick={handleShowEditMovieForm}
                             >
                                 Edit
                             </button>
                             <button
-                                className="px-5 py-2 bg-red-800 text-white rounded-md hover:bg-[#ba3333] transition text-sm w-[100%]"
+                                className="px-5 py-2 border border-red-800 text-white rounded-md hover:bg-[#ba3333] transition text-sm w-[100%]"
                                 onClick={() => handleDeleteMovie(title)}
                             >
                                 Delete

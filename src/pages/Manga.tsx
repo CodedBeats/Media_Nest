@@ -110,7 +110,7 @@ const Manga = () => {
                 {/* gradient starts solid at top, begins fade around halfway */}
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black"></div>
                 
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+                <div className="absolute inset-0 flex flex-col items-center jsm:justify-center md:justify-end gap-4 md:pb-10">
                     <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-2 pt-12 md:pt-0">
                         Manga Tracker
                     </h1>
