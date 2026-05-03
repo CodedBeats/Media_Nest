@@ -27,7 +27,7 @@ const MovieCell = ({
     director: string;
     status: string;
     rating: number;
-    watchProgressTime: string
+    watchProgressTime?: string;
 }) => {
     // react query
     const queryClient = useQueryClient();

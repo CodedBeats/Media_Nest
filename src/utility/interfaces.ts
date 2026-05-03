@@ -46,6 +46,7 @@ export interface MovieItem {
     director: string;
     status: string;
     rating: number;
+    watchProgressTime?: string;
 }
 
 

@@ -48,7 +48,8 @@ export const fetchMovieDataAPI = async (movieName: string): Promise<MovieItem | 
             year: fetchedMovieData.year,
             director: fetchedMovieData.director,
             status: "Status: None",
-            rating: 0
+            rating: 0,
+            watchProgressTime: "00:00:00"
         }
 
         console.log(movieDataFoundation)
