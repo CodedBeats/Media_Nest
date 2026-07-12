@@ -89,6 +89,14 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
 
             {/* form fields */}
             <div className="flex flex-col gap-4">
+                {/* manga poster */}
+                <div className="flex justify-center">
+                    <img
+                        src={formData.imgUrl}
+                        alt={``}
+                        className="w-[50%]"
+                    />
+                </div>
                 <CustomInput
                     label="Cover Image"
                     inputType="text"
@@ -304,6 +312,14 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
             {/* form fields */}
             <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
+                    {/* series poster */}
+                    <div className="flex justify-center">
+                        <img
+                            src={formData.imgUrl}
+                            alt={``}
+                            className="w-[50%]"
+                        />
+                    </div>
                     <CustomInput
                         label="Title"
                         inputType="text"
@@ -520,6 +536,14 @@ export const AddMovieForm = ({ closeForm }: { closeForm: () => void }) => {
             {/* form fields */}
             <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
+                    {/* movie poster */}
+                    <div className="flex justify-center">
+                        <img
+                            src={formData.imgUrl}
+                            alt={``}
+                            className="w-[50%]"
+                        />
+                    </div>
                     {/* input title */}
                     <CustomInput
                         label="Title"

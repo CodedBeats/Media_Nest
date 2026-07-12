@@ -93,6 +93,14 @@ export const EditMangaForm = ({
 
             {/* form fields */}
             <div className="flex flex-col gap-4">
+                {/* manga poster */}
+                <div className="flex justify-center">
+                    <img
+                        src={formData.imgUrl}
+                        alt={``}
+                        className="w-[50%]"
+                    />
+                </div>
                 <CustomInput
                     label="Cover Image"
                     inputType="text"
@@ -337,6 +345,14 @@ export const EditSeriesForm = ({
 
             {/* form fields */}
             <div className="flex flex-col gap-4">
+                {/* series poster */}
+                <div className="flex justify-center">
+                    <img
+                        src={formData.imgUrl}
+                        alt={``}
+                        className="w-[50%]"
+                    />
+                </div>
                 <CustomInput
                     label="Title"
                     inputType="text"
@@ -548,6 +564,15 @@ export const EditMovieForm = ({
 
             {/* form fields */}
             <div className="flex flex-col gap-4">
+                {/* movie poster */}
+                <div className="flex justify-center">
+                    <img
+                        src={formData.imgUrl}
+                        alt={``}
+                        className="w-[50%]"
+                    />
+                </div>
+
                 <div className="flex flex-col gap-2">
                     {/* input title */}
                     <CustomInput
