@@ -30,6 +30,7 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
         rating: 0,
         progress: "/",
         imgUrl: "",
+        readMangaUrl: "",
     });
     const [statusLabelState, setStatusLabelState] = useState<string>("Status: None");
 
@@ -53,7 +54,7 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
         // create manga item
         createMangaItem(formData)
             .then(() => {
-                console.log("manga added successfully");
+                // console.log("manga added successfully");
             })
             .catch((error) => {
                 console.error("Failed to add manga:", error);
@@ -106,7 +107,7 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
                         setFormData({ ...formData, imgUrl: e.target.value });
                     }}
                 />
-                <CustomInput
+                {/* <CustomInput
                     label="MangaDex ID"
                     inputType="text"
                     placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
@@ -114,7 +115,7 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
                     onChange={(e) => {
                         setFormData({ ...formData, mangadexID: e.target.value });
                     }}
-                />
+                /> */}
                 <CustomInput
                     label="Title"
                     inputType="text"
@@ -171,6 +172,15 @@ export const AddMangaForm = ({ closeForm }: { closeForm: () => void }) => {
                             ...formData,
                             rating: parseInt(e.target.value),
                         });
+                    }}
+                />
+                <CustomInput
+                    label="Continue"
+                    inputType="text"
+                    placeholder="https://readMangaOnlineUrl.com/"
+                    value={formData.readMangaUrl || ""}
+                    onChange={(e) => {
+                        setFormData({ ...formData, readMangaUrl: e.target.value });
                     }}
                 />
             </div>
@@ -270,7 +280,7 @@ export const AddSeriesForm = ({ closeForm }: { closeForm: () => void }) => {
         // create series item
         try {
             await createSeriesItem(newSeriesItem)
-            console.log("Series added successfully")
+            // console.log("Series added successfully")
 
             // reset season and episode and title
             setSeasonProgress("")

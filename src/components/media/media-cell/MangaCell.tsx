@@ -5,7 +5,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { MediaStatusBtn } from "../../btns/MediaStatusBtn";
 import { EditMangaForm } from "../forms/EditMediaForms";
 // api
-import { deleteMediaItemByID, updateMangaItemByID } from "../../../apis/firebase/firestore";
+import {
+    deleteMediaItemByID,
+    updateMangaItemByID,
+} from "../../../apis/firebase/firestore";
 // context
 import { useAuth } from "../../../hooks/useFirebaseAuth";
 
@@ -19,6 +22,7 @@ const MangaCell = ({
     progress,
     status,
     rating,
+    readMangaUrl,
 }: {
     id?: string;
     mangadexID?: string;
@@ -29,6 +33,7 @@ const MangaCell = ({
     progress?: string;
     status?: string;
     rating?: number;
+    readMangaUrl?: string;
 }) => {
     // react query
     const queryClient = useQueryClient();
@@ -36,7 +41,9 @@ const MangaCell = ({
     const { user } = useAuth();
 
     // state
-    const [originalStatus, setOriginalStatus] = useState(status ?? "Select Status");
+    const [originalStatus, setOriginalStatus] = useState(
+        status ?? "Select Status",
+    );
     const [labelStatus, setLabelStatus] = useState(status ?? "Select Status");
     const [showEditMangaForm, setShowEditMangaForm] = useState(false);
 
@@ -50,30 +57,30 @@ const MangaCell = ({
                 console.log("Manga status updated successfully");
                 setOriginalStatus(labelStatus); // update original status to new status
                 // background refetch
-                queryClient.invalidateQueries({ queryKey: ["mangaItems"] })
+                queryClient.invalidateQueries({ queryKey: ["mangaItems"] });
             })
             .catch((error) => {
                 console.error("Error updating manga status: ", error);
             });
     };
-        
+
     // delete manga
     const handleDeleteManga = (mangaName: string) => {
-        const confirmDelete = confirm(`Delete "${mangaName}" ?`)
-        
+        const confirmDelete = confirm(`Delete "${mangaName}" ?`);
+
         // delete manga with firebase api call
         if (confirmDelete) {
             deleteMediaItemByID(id || "", "manga")
                 .then(() => {
-                    console.log("Manga deleted successfully")
+                    console.log("Manga deleted successfully");
                     // background refetch
-                    queryClient.invalidateQueries({ queryKey: ["mangaItems"] })
+                    queryClient.invalidateQueries({ queryKey: ["mangaItems"] });
                 })
                 .catch((error) => {
-                    console.error("Error deleting manga: ", error)
+                    console.error("Error deleting manga: ", error);
                 });
         }
-    }
+    };
 
     // show and hide edit manga form
     const handleShowEditMangaForm = () => {
@@ -81,8 +88,7 @@ const MangaCell = ({
     };
     const handleCloseEditMangaForm = () => {
         setShowEditMangaForm(false);
-    }
-
+    };
 
     return (
         <div
@@ -112,9 +118,21 @@ const MangaCell = ({
                         </p>
                     </div>
 
-                    <p className="text-gray-400 text-sm mt-2">
-                        Progress: {progress}
-                    </p>
+                    <div className="flex justify-between">
+                        <p className="text-gray-400 text-sm mt-2">
+                            Progress: {progress}
+                        </p>
+                        {!readMangaUrl || readMangaUrl !== "" && (
+                            <a 
+                                href={readMangaUrl}
+                                target="blank"
+                                className="text-center text-[#1f942e]"
+                            >
+                                Continue
+                            </a>
+                        )}
+                    </div>
+                    
                 </div>
             </div>
             {/* actions below img */}
@@ -123,38 +141,45 @@ const MangaCell = ({
                     <MediaStatusBtn
                         disabled={!user}
                         currentStatus={labelStatus}
-                        options={["Reading", "Completed", "On Hold", "Dropped", "Plan to Read"]}
-                        onSelect={(newStatus) => user && setLabelStatus(newStatus)}
+                        options={[
+                            "Reading",
+                            "Completed",
+                            "On Hold",
+                            "Dropped",
+                            "Plan to Read",
+                        ]}
+                        onSelect={(newStatus) =>
+                            user && setLabelStatus(newStatus)
+                        }
                     />
                 </div>
 
                 {labelStatus !== originalStatus && (
-                <button
-                    className="px-5 py-2 border border-green-900 text-white rounded-md hover:bg-green-700 transition text-sm w-[100%]"
-                    onClick={handleUpdateMangaStatus}
-                >
-                    Update Status
-                </button>
+                    <button
+                        className="px-5 py-2 border border-green-900 text-white rounded-md hover:bg-green-700 transition text-sm w-[100%]"
+                        onClick={handleUpdateMangaStatus}
+                    >
+                        Update Status
+                    </button>
                 )}
 
                 {user && (
-                <div className="flex gap-5 w-full">
-                    <button
-                        className="px-5 py-2 border border-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
-                        onClick={handleShowEditMangaForm}
-                    >
-                        Edit
-                    </button>
-                    <button
-                        className="px-5 py-2 border border-red-800 text-white rounded-md hover:bg-[#ba3333] transition text-sm w-[100%]"
-                        onClick={() => handleDeleteManga(title)}
-                    >
-                        Delete
-                    </button>
-                </div>
+                    <div className="flex gap-5 w-full">
+                        <button
+                            className="px-5 py-2 border border-blue-800 text-white rounded-md hover:bg-[#036AA1] transition text-sm w-[100%]"
+                            onClick={handleShowEditMangaForm}
+                        >
+                            Edit
+                        </button>
+                        <button
+                            className="px-5 py-2 border border-red-800 text-white rounded-md hover:bg-[#ba3333] transition text-sm w-[100%]"
+                            onClick={() => handleDeleteManga(title)}
+                        >
+                            Delete
+                        </button>
+                    </div>
                 )}
             </div>
-
 
             {/* DESKTOP view */}
             <div className="hidden sm:flex items-center sm:items-start justify-between gap-4 sm:gap-6 w-full">
@@ -208,32 +233,43 @@ const MangaCell = ({
 
                     <div className="align-bottom flex grow-0">
                         {user && (
-                        <div className="flex gap-5">
-                            <button
-                                className="px-5 py-1 border border-blue-800 text-white rounded hover:bg-[#036AA1] transition text-sm"
-                                onClick={handleShowEditMangaForm}
-                            >
-                                Edit
-                            </button>
-                            <button
-                                className="px-5 py-2 border border-red-800 text-white rounded-md hover:bg-[#ba3333] transition text-sm w-[100%]"
-                                onClick={() => handleDeleteManga(title)}
-                            >
-                                Delete
-                            </button>
-                        </div>
+                            <div className="flex gap-5">
+                                <button
+                                    className="px-5 py-1 border border-blue-800 text-white rounded hover:bg-[#036AA1] transition text-sm"
+                                    onClick={handleShowEditMangaForm}
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    className="px-5 py-2 border border-red-800 text-white rounded-md hover:bg-[#ba3333] transition text-sm w-[100%]"
+                                    onClick={() => handleDeleteManga(title)}
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         )}
                     </div>
                 </div>
 
                 {/* rating */}
-                <div className="flex flex-row md:flex-col items-center justify-center gap-5 md:gap-1 sm:pr-4 h-full">
-                    <p className="text-white text-sm">Rating</p>
-                    <p className="text-lg font-bold text-[#ea8900]">
-                        {typeof rating === "number" && rating > 0
-                            ? rating
-                            : "Unrated"}
-                    </p>
+                <div className="self-stretch flex flex-row md:flex-col items-center justify-center md:justify-between gap-5 md:gap-1 sm:pr-4">
+                    <div className="flex flex-row md:flex-col items-center gap-5 md:gap-1">
+                        <p className="text-white text-sm">Rating</p>
+                        <p className="text-lg font-bold text-[#ea8900]">
+                            {typeof rating === "number" && rating > 0
+                                ? rating
+                                : "Unrated"}
+                        </p>
+                    </div>
+                    {!readMangaUrl || readMangaUrl !== "" && (
+                        <a 
+                            href={readMangaUrl}
+                            target="blank"
+                            className="text-center text-gray-500 cursor-pointer hover:text-[#1f942e] transition"
+                        >
+                            Continue
+                        </a>
+                    )}
                 </div>
             </div>
 
@@ -250,6 +286,7 @@ const MangaCell = ({
                             rating={rating || 0}
                             progress={progress || ""}
                             imgUrl={imgUrl || ""}
+                            readMangaUrl={readMangaUrl || ""}
                             closeForm={handleCloseEditMangaForm}
                         />
                     </div>
