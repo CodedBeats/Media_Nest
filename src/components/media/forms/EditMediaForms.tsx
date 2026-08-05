@@ -23,6 +23,7 @@ export const EditMangaForm = ({
     rating,
     progress,
     imgUrl,
+    readMangaUrl,
     closeForm,
 }: {
     id: string;
@@ -33,6 +34,7 @@ export const EditMangaForm = ({
     rating: number;
     progress: string;
     imgUrl: string;
+    readMangaUrl: string;
     closeForm: () => void;
 }) => {
     // react query
@@ -47,6 +49,7 @@ export const EditMangaForm = ({
         rating: rating,
         progress: progress,
         imgUrl: imgUrl,
+        readMangaUrl: readMangaUrl,
     });
     const [statusLabelState, setStatusLabelState] = useState<string>(status);
 
@@ -69,7 +72,7 @@ export const EditMangaForm = ({
 
         // edit manga item
         updateMangaItemByID(id, formData);
-        console.log("edited manga item:", formData);
+        // console.log("edited manga item:", formData);
 
         // background refetch
         queryClient.invalidateQueries({ queryKey: ["mangaItems"] })
@@ -110,7 +113,7 @@ export const EditMangaForm = ({
                         setFormData({ ...formData, imgUrl: e.target.value });
                     }}
                 />
-                <CustomInput
+                {/* <CustomInput
                     label="MangaDex ID"
                     inputType="text"
                     placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
@@ -118,7 +121,7 @@ export const EditMangaForm = ({
                     onChange={(e) => {
                         setFormData({ ...formData, mangadexID: e.target.value });
                     }}
-                />
+                /> */}
                 <CustomInput
                     label="Title"
                     inputType="text"
@@ -175,6 +178,15 @@ export const EditMangaForm = ({
                             ...formData,
                             rating: parseInt(e.target.value),
                         });
+                    }}
+                />
+                <CustomInput
+                    label="Continue"
+                    inputType="text"
+                    placeholder="https://readMangaOnlineUrl.com/"
+                    value={formData.readMangaUrl || ""}
+                    onChange={(e) => {
+                        setFormData({ ...formData, readMangaUrl: e.target.value });
                     }}
                 />
             </div>
