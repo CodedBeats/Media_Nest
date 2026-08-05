@@ -12,6 +12,7 @@ export interface MangaItem {
     progress: string;
     rating: number;
     status: string;
+    readMangaUrl?: string;
 }
 // Manga item with guaranteed coverUrl
 export type MangaItemWithCover = MangaItem & { 
